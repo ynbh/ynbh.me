@@ -44,6 +44,7 @@ export default function Navbar() {
         <Item href='/thoughts'>Thoughts</Item>
         {/* <Item href='/visuals'>Visuals</Item> */}
         <Item href='/projects'>Projects</Item>
+        <Item href='/resume'>Resume</Item>
         {/* <Item href='/guestbook'>Guestbook</Item> */}
       </ul>
     </nav>

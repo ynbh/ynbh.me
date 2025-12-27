@@ -1,0 +1,72 @@
+export const metadata = {
+  title: 'Resume',
+}
+
+# Resume
+
+import { Plaintext } from '@/components/project-logos'
+import Image from 'next/image'
+import umdLogo from '@/assets/umd.png'
+
+<a href="/resume.pdf" target="_blank" className="font-semibold text-rurikon-400 hover:text-rurikon-600 transition-colors inline-block mb-8">
+  View PDF
+</a>
+
+## Education
+
+<div className="flex items-center gap-3 mb-4 mt-2">
+    <Image
+        src={umdLogo}
+        alt="UMD Logo"
+        width={48}
+        height={48}
+        placeholder="blur"
+        className="rounded-full"
+    />
+    <h3 className="text-xl font-bold font-serif mb-0">University of Maryland</h3>
+</div>
+
+**Bachelor of Science in Computer Science, Minor in Mathematics**
+*Aug. 2023 – May 2027*
+
+## Experience
+
+### [<Plaintext title="Children’s National Hospital" />](https://childrensnational.org)
+**Student Developer**
+*Aug. 2024 – May 2025*
+
+- Architected `TrachSense`, an end-to-end IoT platform for real-time airway alerts (tracheostomy patients).
+- Designed a data pipeline ingesting raw CO2 readings (Arduino) -> anomaly processing (Raspberry Pi/TrachHub) -> mobile app alerts.
+- Achieved &lt;1s latency via WebSocket streaming.
+- Built a hysteresis-based breathing pattern analysis engine (reducing false alerts by 10%).
+
+### [<Plaintext title="Bharat Petroleum" />](https://www.bharatpetroleum.in)
+**Software Engineering Intern**
+*Dec. 2024 – Jan. 2025*
+
+- Built an anomaly detection framework (DBSCAN + Isolation Forest) identifying 950+ potential fraudsters from 320K+ transactions.
+- Designed evaluation pipelines with PCA visualization to surface irregular behavior.
+
+### [<Plaintext title="Amazon Project Kuiper" />](https://www.amazon.jobs/en/teams/projectkuiper)
+**Student Developer**
+*Jan. 2024 – May 2024*
+
+- Engineered 3 core APIs for collision data consensus and operator registration.
+- Developed FastAPI/Postgres backend for a blockchain-integrated Space Safety Visualizer.
+- Implemented data sync for ESA satellite collision-avoidance rules via Hyperledger World State.
+
+## Technical Skills
+
+- **Languages**: Python, Java, TypeScript, JavaScript, Rust, OCaml, C/C++, SQL (Postgres)
+- **Web & Backend**: React, Node.js, Next.js, FastAPI, Flask, Tokio, Tailwind CSS
+- **Tools**: Git, Docker, Linux/UNIX, AWS, Embedded Systems (RPi, Arduino)
+
+## Projects
+
+### Canvas MCP
+Built a Model Context Protocol server for Canvas (ELMS) to answer coursework questions via LLM clients.
+- Implemented scalable API handling for 12+ endpoints.
+
+### Link Walker
+High-performance Rust CLI for concurrent web crawling.
+- Validates 500+ links in &lt;10s with optimized caching.

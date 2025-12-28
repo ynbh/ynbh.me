@@ -1,0 +1,197 @@
+export const metadata = {
+  title: 'Minimax for Tic Tac Toe',
+  date: '2025.12.27',
+  description: 'Using Minimax to build a Tic Tac Toe Agent',
+}
+
+
+# Why Tic Tac Toe + Minimax? 
+
+Before I go into motivations, let's recap on what Tic Tac Toe is:
+
+> Tic-tac-toe, noughts and crosses, or Xs and Os is a paper-and-pencil game for two players who take turns marking the spaces in a three-by-three grid, one with Xs and the other with Os.
+
+It is a very small game: The state space is tiny, the action space is limited, and every outcome is zero-sum - one player's gain is the other's loss (or both draw). This makes it an ideal playground for exploring game-search algorithms. 
+
+This fits perfectly into _why_ we'd want to use something like Minimax. So, what is [**Minimax**](https://en.wikipedia.org/wiki/Minimax)?
+
+
+Minimax is a decision rule used in game-playing agents that assume both players play optimally. The maximizing player tries to choose moves that maximize the outcome, while the minimizing player tries to push the outcome in the opposite direction.
+In simple words, Minimax tries to pick moves that perform best under the worst-case opponent response. 
+
+For Tic-Tac-Toe, this is exactly what we want: an agent that explores all possible moves in the future, and picks a move that ensures it never loses. 
+
+---
+
+# The model for Tic-Tac-Toe 
+
+For simplicity, I used a flat array to represent the board. Let's call it `game`. In code, this looks something like:
+
+```python 
+game = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+````
+
+This translates to a pretty nice grid:
+
+```python 
+0 | 1 | 2
+---------
+3 | 4 | 5
+---------
+6 | 7 | 8
+```
+
+There are 8 possible win conditions (same marker (X/O) on any of these):
+- `012`, `345`, `678` 
+- `036`, `147`, `258` 
+- `048`, `246`
+
+So, checking if a player has won is trivial: we just check if any of these conditions are satisfied.
+
+## Implementing the game 
+
+Now that we have a way to represent the board, the next step is to implement the game mechanics: making moves, checking whether a player has won, and undoing moves so the Minimax algorithm can simulate future states.
+These functions form the _environment_ that the agent interacts with.
+
+_Small note_: for our purposes, let's assume the game is a global state.
+
+### Making a move 
+
+To do this, we need to define a function that takes the desired move along with whose turn it is, and updates the board accordingly.
+
+```python
+def make_move(move, turn):
+    if turn == 0:
+        game[int(move)] = 'X'
+    else:
+        game[int(move)] = 'O'
+```
+
+
+### Checking for a win 
+
+As stated earlier, this is simply checking if any of the win conditions are satisified. In code, this looks something like:
+
+```python
+def check_win():
+    # check all rows 
+    for i in range(0, 9, 3):
+        if game[i] == game[i + 1] == game[i + 2]:
+            return True 
+        
+    # check all columns 
+    for i in range(3):
+        if game[i] == game[i + 3] == game[i + 6]:
+            return True 
+        
+    # check all diagonals 
+    if game[0] == game[4] == game[8]:
+        return True 
+    if game[2] == game[4] == game[6]:
+        return True 
+    
+    return False 
+```
+
+There is probably a more pythonic way to do this, but this works for now.
+
+### Undoing a move
+
+Similar to making a move, we do the inverse of the move we just made. That involves updating the state back to its previous state, which would be its assigned index in the game array.
+
+```python 
+def undo_move(move):
+    game[int(move)] = str(move)
+```
+
+Undoing a move is important because the Minimax algorithm simulates future game states. 
+Instead of copying the board each time, we temporarily apply a move, evaluate it, and then restore the board to its previous state.
+
+
+### Getting the list of available moves 
+
+While humans can visually see which cells are empty, the program needs an explicit list of legal moves. Minimax uses this list to decide which branches of the game tree to explore.
+
+```python 
+def get_available_moves():
+    return [i for i in game if i != 'X' and i != 'O']
+```
+
+So for example, if the board looks like this:
+
+```python
+X | 1 | 2
+---------
+3 | 4 | 5
+---------
+6 | 7 | 8
+```
+
+The available moves would be `[1, 2, 3, 4, 5, 6, 7, 8]`
+
+---
+
+# Teaching the agent to play: The Minimax algorithm 
+
+With the game enviornment defined, we now have everything we need to let the agent "think" about moves. 
+Minimax treats the game as a search problem: for the current board state, it recursively explores all possible moves, 
+assuming both players play optimally. 
+At the end of each simulated game, we assign a score to the outcome (10 for win, -10 for loss, 0 for draw), and then work our way back up the tree to find the move that maximizes the score. 
+
+## Implementing Minimax 
+
+The Minimax algorothm involves two functions:
+- `evaluate()`
+- `minimax(is_maximizing)`
+
+### Evaluate 
+
+At the heart of the Minimax algorithm, lies the evaluate function. 
+This is responsible of 'evaluating' the board state, and assigning a score to it, depending on whose turn it is:
+
+- If the maximizing player, the agent (X), wins, return 10. 
+- If the minimzing player, the opponent (O), wins, return -10. 
+- If the game is a draw, return 0. 
+
+```python 
+def evaluate():
+    # X is the agent
+    if game.check_win():
+        return 10 if game.winner == "X" else -10
+
+    # Draw, or game is not over 
+    return 0
+```
+
+Pretty simple! 
+
+### Minimax 
+
+This is the core of the Minimax algorithm. It is responsible for exploring the game tree, and finding the best move for the agent. 
+
+Note: Minimax doesn’t directly return the best move - it returns a score for each simulated move, and we choose the move with the highest score.
+
+Since this is a recursive algorithm, it is imperative that we have a base case. This happens when:
+
+- Someone has won the game 
+- The game is a draw 
+
+```python
+def minimax(self, game: TicTacToe, depth, is_maximizing):
+
+    # base case: if someone won, return the score. 
+    # if there are no moves left, we have a draw, so return 0. 
+
+    score = self.evaluate(game, depth)
+    moves = game.get_available_moves()
+    if score != 0 or not moves:
+        return score
+```
+
+Now comes the exploring part. Exploration relies on whether the agent is maximizing or minimizing. What this means is:
+
+- If it is X's turn (maximizing), we choose the move that produces the highest score.
+- If it is O's turn (minimizing), we choose the move that produces the lowest score.
+
+This alternating behaviour is what allows Minimax to simulate two players who are both playing optimally. 
+

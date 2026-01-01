@@ -1,5 +1,5 @@
 export const metadata = {
-  title: 'Minimax for Tic Tac Toe',
+  title: 'DRAFT: Minimax for Tic Tac Toe',
   date: '2025.12.27',
   description: 'Using Minimax to build a Tic Tac Toe Agent',
 }
@@ -195,3 +195,71 @@ Now comes the exploring part. Exploration relies on whether the agent is maximiz
 
 This alternating behaviour is what allows Minimax to simulate two players who are both playing optimally. 
 
+After that, the implementation is just two symmetric loops. 
+We iterate over every legal move, simulate it, recurse to get a score for the resulting position, then undo the move. 
+The only difference is whether we keep the maximum score (X’s turn) or the minimum score (O’s turn):
+
+```python
+# follows after the base case 
+if is_maximizing:
+    best = -math.inf
+    for move in moves:
+        make_move(move, 0)              # X plays
+        best = max(best, minimax(game, depth + 1, False))
+        undo_move(move)
+    return best
+else:
+    best = math.inf
+    for move in moves:
+        make_move(move, 1)              # O plays
+        best = min(best, minimax(game, depth + 1, True))
+        undo_move(move)
+    return best
+```
+
+That’s the full Minimax recursion: on X’s turn we take the **max** score over all possible moves, and on O’s turn we take the **min** score.
+
+### A quick note on `depth`
+
+You might be wondering what depth is. `depth` represents how many moves deep we are in the recursion (i.e. how far we are from the current board state). We include it so the agent prefers to finish the game sooner.
+
+In practice, we slightly adjust the win/loss scores using depth:
+
+For a win: 10 - depth -> earlier wins score higher.
+For a loss: -10 + depth -> later losses are "less bad" than immediate ones.
+
+This doesn’t change whether a position is winning or losing — it just acts as a tie-breaker so the agent plays more decisively.
+
+### Choosing the actual move 
+
+Minimax returns a score, not the move itself. 
+So to pick a move, we try every legal move for X, run Minimax on it, and keep the one with the highest score:
+
+```python
+def find_move(game):
+    best_val = -math.inf
+    best_move = None
+
+    for move in get_available_moves():
+        make_move(move, 0)                  # try X move
+        score = minimax(game, 0, False)     # now it's O's turn
+        undo_move(move)
+
+        if score > best_val:
+            best_val = score
+            best_move = move
+
+    return best_move
+```
+
+At that point, the game loop is simple: X calls `find_move()`, O is the human input, and the board updates until `check_win()` or no moves remain.
+
+
+# Conclusion 
+
+At this point, we have everything: a game environment, a Minimax search that scores positions, and a `find_move()` function that turns those scores into an actual action.
+Because Tic-Tac-Toe's state space is small, Minimax can explore the full game tree, which means this agent will never lose.
+
+From here, the natural next step is adding alpha-beta pruning (for larger games) or building a nicer UI. I'm interested to see how I can use this knowledge to build something for Chess, for example. 
+
+Well, that's it for now. Thanks for reading!

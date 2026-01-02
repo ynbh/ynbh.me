@@ -1,6 +1,6 @@
 export const metadata = {
-  title: 'DRAFT: Minimax for Tic Tac Toe',
-  date: '2025.12.27',
+  title: 'Minimax for Tic Tac Toe',
+  date: '2025-12-27',
   description: 'Using Minimax to build a Tic Tac Toe Agent',
 }
 
@@ -225,10 +225,10 @@ You might be wondering what depth is. `depth` represents how many moves deep we 
 
 In practice, we slightly adjust the win/loss scores using depth:
 
-For a win: 10 - depth -> earlier wins score higher.
-For a loss: -10 + depth -> later losses are "less bad" than immediate ones.
+- For a win: 10 - depth -> earlier wins score higher.
+- For a loss: -10 + depth -> later losses are "less bad" than immediate ones.
 
-This doesn’t change whether a position is winning or losing — it just acts as a tie-breaker so the agent plays more decisively.
+This doesn’t change whether a position is winning or losing - it just acts as a tie-breaker so the agent plays more decisively.
 
 ### Choosing the actual move 
 
@@ -254,6 +254,7 @@ def find_move(game):
 
 At that point, the game loop is simple: X calls `find_move()`, O is the human input, and the board updates until `check_win()` or no moves remain.
 
+--- 
 
 # Conclusion 
 

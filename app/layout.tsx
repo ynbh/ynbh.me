@@ -34,6 +34,8 @@ export const metadata: Metadata = {
     template: '%s - Yashas Bhat',
     default: 'Yashas Bhat',
   },
+  description:
+    'CS student at University of Maryland building backend systems and developer tools.',
 }
 
 export const viewport: Viewport = {

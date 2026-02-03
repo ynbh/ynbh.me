@@ -1,72 +1,113 @@
 export const metadata = {
   title: 'Projects',
+  description:
+    'Software engineering portfolio: Rust systems programming, Python backend APIs, AI/ML integrations.',
 }
 
 # Projects
 
-I build product-focused software across backend systems, developer tools, and applied AI. I like projects that ship: real users, real constraints, and clean interfaces (CLI/API/UI).
+I build product-focused software across backend systems, developer tools, and applied AI. I like projects that ship: real users, real constraints, and clean interfaces.
 
 import { Plaintext } from '@/components/project-logos'
+import { SkillChips } from '@/components/skill-chips'
 
-## [<Plaintext title="Know" />](https://github.com/ynbh/know)
+---
 
-Local hybrid search CLI that indexes personal files into chunk embeddings (persistent Chroma store) and ranks results using dense semantic search, BM25 lexical search, and RRF fusion.
+## [<Plaintext title="Know" />](https://github.com/ynbh/know) · Local Semantic Search CLI
 
-- Engineered incremental indexing with a file-change cache and chunk deduplication, cutting re-index time 67%.
-- Built with Python and Llama Index for a fully local, private search experience.
+Hybrid search CLI with persistent vector store for local document search.
 
-## [<Plaintext title="Walker" />](https://github.com/ynbh/walker)
+![Know RAG Pipeline](diagrams/know.svg)
 
-High-performance link analysis CLI built in Rust. Recursively crawls a website, discovers internal links, and validates them concurrently to surface broken or misconfigured URLs.
+- Reduced re-indexing time by **67%** through incremental indexing and chunk deduplication
+- BM25 + RRF fusion for improved retrieval quality
+- Persistent Chroma store for fast subsequent queries
 
-- Recursive crawler starting from a root URL; follows internal links across the domain.
-- Concurrent `HEAD` verification phase to validate links quickly.
-- Actionable output with HTTP status codes, timeouts, and error reporting.
+<SkillChips skills={["Python", "LlamaIndex", "Chroma", "BM25"]} />
 
-## [<Plaintext title="Testudot" />](https://github.com/ynbh/testudot)
+---
 
-UMD course-seat monitoring + notifications in Python. Fetches UMD Testudo section data, tracks changes over time, and sends HTML email notifications.
+## [<Plaintext title="Canvas MCP" />](https://github.com/ynbh/canvas-mcp) · LLM Course Assistant
 
-- Tracks new sections, seat availability changes, and section removals.
-- FastAPI server for health checks, listing mappings, and triggering monitoring cycles.
-- Persistence modes: local JSON or Upstash Redis for cloud deployments.
-- Dockerized builds using `uv` for reproducibility.
+Model Context Protocol server enabling LLM clients to query Canvas coursework data.
 
-## [<Plaintext title="Snippet-Verse" />](https://github.com/ynbh/snippet-verse)
+![Canvas MCP Architecture](diagrams/canvas-mcp.svg)
 
-A "no-database" code sharing platform that stores shareable state via encoded URL parameters. Enables content sharing without third-party data hosting.
+- **12+ API endpoints** for assignment-aware AI Q&A
+- Enables Claude, GPT-4, and other LLM clients to understand coursework context
+- Zero-config integration with Model Context Protocol
 
-- Uses URL parsing to decode/encode shareable state.
-- "Immutable" sharing model: URLs represent content snapshots.
-- Deployed on Vercel.
+<SkillChips skills={["TypeScript", "MCP", "Canvas API"]} />
 
-## [<Plaintext title="NoteRouter" />](https://github.com/ynbh/noterouter)
+---
 
-LLM-powered note organization CLI in Python. Automatically categorizes and files notes from an inbox into a structured directory using an LLM.
+## [<Plaintext title="Walker" />](https://github.com/ynbh/walker) · Concurrent Link Validator
 
-- CLI workflow to add/process/refactor/browse notes.
-- Automated "inbox → taxonomy" filing powered by Gemini.
-- Designed around a repeatable notes-management loop.
+High-performance Rust CLI that validates URLs in parallel.
 
-## [<Plaintext title="PlanetTerp Agent" />](https://github.com/ynbh/pterp-agent)
+![Walker Flow](diagrams/walker.svg)
 
-AI assistant for UMD course research. A chat-style AI assistant that uses PlanetTerp and Reddit to help research courses and professors.
+- Validates **500+ links in &lt;10 seconds** using Tokio async runtime
+- Connection pooling with configurable thread count
+- Published to **[crates.io](https://crates.io/crates/link-walker)**
 
-- Grade aggregation and Reddit sentiment synthesis.
-- Professor disambiguation using course context.
-- Conversation export for sharing and reproducibility.
+<SkillChips skills={["Rust", "Tokio", "reqwest", "CLI"]} />
 
-## [<Plaintext title="PlanetTerp Client" />](https://github.com/ynbh/planet-terp-client)
+---
 
-Typed Python client library for PlanetTerp API. Ergonomic helpers for courses, professors, search, and grades.
+## [<Plaintext title="Testudot" />](https://github.com/ynbh/testudot) · Course Seat Monitor
 
-- Simple API: `course()`, `professor()`, `search()`, `grades()`.
-- Supports identifying instructor type (TA vs professor).
-- Includes OpenAPI spec and demo scripts.
+Backend service monitoring UMD course availability with automated alerts.
+
+![Testudot Monitoring Flow](diagrams/testudot.svg)
+
+- Async monitoring with `asyncio.gather()` for parallel scraping
+- State diffing algorithm detects new sections, seat changes, and removals
+- Dual persistence: local JSON (dev) + Upstash Redis (prod)
+- Dockerized deployment with `uv` for reproducible builds
+
+<SkillChips skills={["Python", "FastAPI", "Redis", "Docker"]} />
+
+---
+
+## [<Plaintext title="NoteRouter" />](https://github.com/ynbh/noterouter) · LLM Note Organizer
+
+LLM-powered CLI that automatically categorizes notes into a taxonomy.
+
+- Structured LLM outputs using Pydantic models with JSON schema generation
+- Interactive TUI with Textual: split-screen directory tree + markdown viewer
+- Automated file reorganization with approval workflow
+
+<SkillChips skills={["Python", "Gemini API", "Pydantic", "Textual"]} />
+
+---
+
+## [<Plaintext title="PlanetTerp Agent" />](https://github.com/ynbh/pterp-agent) · Course Research Assistant
+
+Chat-based AI assistant synthesizing course data from multiple sources.
+
+- OpenAI function calling for structured tool use
+- Multi-source aggregation: PlanetTerp API + Reddit sentiment
+- Conversation persistence with JSON export
+
+<SkillChips skills={["Python", "OpenAI API", "Function Calling"]} />
+
+---
+
+## [<Plaintext title="PlanetTerp Client" />](https://github.com/ynbh/planet-terp-client) · API Client Library
+
+Typed Python client for PlanetTerp API. Published to **[PyPI](https://pypi.org/project/planet-terp-client/)**.
+
+- Clean API: `course()`, `professor()`, `search()`, `grades()`
+- Type-safe dataclass models
+- Includes OpenAPI spec and demo scripts
+
+<SkillChips skills={["Python", "PyPI", "REST API"]} />
 
 ---
 
 ### Other Projects
 
 - **[Watch](https://github.com/ynbh/watch)**: Terminal-first show search + playback. A Textual TUI that searches TMDB, browses results, and launches ad-less playback.
-- **[Rename](https://github.com/ynbh/rename)**: Batch renamer that walks a directory and asks a model for better file names. Useful for naming unknown image files, for example.
+- **[Rename](https://github.com/ynbh/rename)**: Batch renamer that walks a directory and asks a model for better file names.
+- **[Snippet-Verse](https://github.com/ynbh/snippet-verse)**: Stateless code sharing via URL encoding. Deployed on Vercel.

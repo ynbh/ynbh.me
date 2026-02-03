@@ -1,15 +1,18 @@
 export const metadata = {
   title: 'Resume',
+  description:
+    'Resume of Yashas Bhat - Software Engineer and CS student at University of Maryland.',
 }
 
 # Resume
 
 import { Plaintext } from '@/components/project-logos'
+import { SkillChips } from '@/components/skill-chips'
 import Image from 'next/image'
 import umdLogo from '@/assets/umd.png'
 
 <a href="/resume.pdf" target="_blank" className="font-semibold text-rurikon-400 hover:text-rurikon-600 transition-colors inline-block mb-8">
-  View PDF
+  Download PDF ↗
 </a>
 
 ## Education
@@ -32,28 +35,37 @@ import umdLogo from '@/assets/umd.png'
 ## Experience
 
 ### [<Plaintext title="Children's National Hospital" />](https://childrensnational.org)
-**Student Developer**
-*Aug. 2024 – May 2025*
+**Student Developer** · *Aug. 2024 – May 2025*
 
 - Architected an end-to-end IoT platform, `TrachSense`, to provide real-time airway alerts for tracheostomy patients.
-- Designed a real-time data pipeline that ingested raw CO2 readings from Arduino sensors, processed anomalies on a Raspberry Pi (TrachHub), and streamed alerts to a mobile app, addressing a leading cause of hospital readmissions.
-- Achieved &lt;1s patient monitoring latency by implementing a WebSocket streaming layer between the Raspberry Pi and mobile app.
-- Built a breathing-pattern analysis engine with hysteresis and statistical thresholds (standard deviation, RMS, flatline ratio) to accurately classify breathing states, reducing false alerts by 10%.
+- Designed a real-time data pipeline that ingested raw CO2 readings from Arduino sensors, processed anomalies on a Raspberry Pi (TrachHub), and streamed alerts to a mobile app.
+- Achieved &lt;1s patient monitoring latency via WebSocket streaming.
+- Built a breathing-pattern analysis engine with hysteresis and statistical thresholds, reducing false alerts by 10%.
+
+<SkillChips skills={["Python", "FastAPI", "WebSocket", "Raspberry Pi", "Arduino"]} />
 
 ### [<Plaintext title="Bharat Petroleum Corporation Limited" />](https://www.bharatpetroleum.in)
-**Software Engineering Intern**
-*Dec. 2024 – Jan. 2025*
+**Software Engineering Intern** · *Dec. 2024 – Jan. 2025*
 
-- Built an anomaly detection framework combining DBSCAN clustering and Isolation Forest, identifying 950+ potentially fraudulent distributors from 320K+ digital customer verification transactions and improving fraud detection accuracy over rule-based checks.
-- Designed a feature extraction pipeline with 6 behavioral features, applying PCA visualization to surface irregular distributor behavior and weekday fraud trends for auditors.
+- Built an anomaly detection framework combining DBSCAN clustering and Isolation Forest, identifying 950+ potentially fraudulent distributors from 320K+ transactions.
+- Designed a feature extraction pipeline with 6 behavioral features, applying PCA visualization to surface irregular behavior.
+
+<SkillChips skills={["Python", "scikit-learn", "pandas", "DBSCAN", "PCA"]} />
 
 ### [<Plaintext title="Amazon Project Kuiper" />](https://www.amazon.jobs/en/teams/projectkuiper)
-**Student Developer**
-*Jan. 2024 – May 2024*
+**Student Developer** · *Jan. 2024 – May 2024*
 
-- Engineered a suite of 3 core APIs for Amazon's Project Kuiper, enabling critical functionalities including Collision Data Message consensus, operator registration, and dynamic trust score management.
-- Developed the FastAPI/PostgreSQL backend for a blockchain-integrated Space Safety Visualizer equipping 10+ satellite operators with real-time collision prediction as a key member of a 13-engineer team.
-- Implemented a blockchain-secured data synchronization system powering the European Space Agency's (ESA) satellite collision-avoidance rules, ensuring real-time sharing of critical metrics via Hyperledger World State.
+- Engineered a suite of 3 core APIs for Amazon's Project Kuiper, enabling Collision Data Message consensus, operator registration, and dynamic trust score management.
+- Developed the FastAPI/PostgreSQL backend for a blockchain-integrated Space Safety Visualizer for 10+ satellite operators.
+- Implemented a blockchain-secured data synchronization system for ESA satellite collision-avoidance rules via Hyperledger World State.
+
+<SkillChips skills={["Python", "FastAPI", "PostgreSQL", "Hyperledger", "REST APIs"]} />
+
+## Technical Skills
+
+- **Languages**: Python, Java, TypeScript, JavaScript, Rust, OCaml, C/C++, SQL (Postgres)
+- **Web & Backend**: React, Node.js, Next.js, FastAPI, Flask, Tokio, Tailwind CSS, JUnit
+- **Tools & Systems**: Git, Docker, Linux/UNIX, AWS, Embedded Systems (Raspberry Pi, Arduino, IoT)
 
 ## Projects
 
@@ -61,9 +73,13 @@ import umdLogo from '@/assets/umd.png'
 *January 2026*
 
 - Built a local hybrid search CLI that indexes personal files into chunk embeddings (persistent Chroma store) and ranks results using dense semantic search, BM25 lexical search, and RRF fusion.
-- Engineered incremental indexing with a file-change cache and chunk deduplication, cutting re-index time 67% (5.7s to 1.9s).
+- Engineered incremental indexing with a file-change cache and chunk deduplication, cutting re-index time 67%.
+
+<SkillChips skills={["Python", "LlamaIndex", "Chroma", "BM25"]} />
 
 ### Canvas MCP
 *July 2025*
 
 - Built a Canvas (ELMS) MCP server exposing 12+ endpoints for assignment-aware Q&A with supported tools like ChatGPT and Claude.
+
+<SkillChips skills={["TypeScript", "MCP", "Canvas API"]} />

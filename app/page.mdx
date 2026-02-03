@@ -2,8 +2,102 @@ export const metadata = {
   title: 'Yashas Bhat',
 }
 
-# Heya
+import { SkillChips } from '@/components/skill-chips'
+import Image from 'next/image'
+import umdLogo from '@/assets/umd.png'
 
-I'm Yashas, an undergraduate at the University of Maryland. I build product-focused software across backend systems, developer tools, and applied AI.
+# Yashas Bhat
 
-You can gain further insights into my background and interests through my [thoughts](/thoughts), [projects](/projects), find me on [GitHub](https://github.com/ynbh), and [LinkedIn](https://www.linkedin.com/in/yashasnbhat).
+I'm a CS & Math student at UMD, graduating in 2027. I like building things that work well—backend systems, developer tools, and lately, a lot of AI integrations. Most of my projects start as problems I wanted to solve for myself.
+
+*Open to Summer 2026 SWE internships.* [Resume](/resume.pdf) · [GitHub](https://github.com/ynbh) · [LinkedIn](https://www.linkedin.com/in/yashasnbhat)
+
+---
+
+## Experience
+
+<div className="flex items-center gap-3 mb-2">
+  <img src="/images/kuiper-logo.png" alt="Amazon" width={32} height={32} className="rounded shrink-0" style={{marginTop: 0, marginBottom: 0}} />
+  <span className="leading-snug">
+    <strong>Amazon Project Kuiper</strong> · Student Developer · <em>Jan – May 2024</em>
+  </span>
+</div>
+
+Built APIs for satellite collision avoidance and a blockchain-integrated Space Safety Visualizer.
+<SkillChips skills={["Python", "FastAPI", "PostgreSQL", "Hyperledger"]} />
+
+<div className="flex items-center gap-3 mb-2 mt-6">
+  <img src="/images/bpcl-logo.png" alt="Bharat Petroleum" width={32} height={32} className="rounded shrink-0" style={{marginTop: 0, marginBottom: 0}} />
+  <span className="leading-snug">
+    <strong>Bharat Petroleum</strong> · SWE Intern · <em>Dec 2024 – Jan 2025</em>
+  </span>
+</div>
+
+Built an ML anomaly detection system to identify fraudulent distributors from transaction data.
+<SkillChips skills={["Python", "scikit-learn", "pandas", "PCA"]} />
+
+<div className="flex items-center gap-3 mb-2 mt-6">
+  <img src="/images/cnh-logo.png" alt="Children's National Hospital" width={32} height={32} className="rounded shrink-0" style={{marginTop: 0, marginBottom: 0}} />
+  <span className="leading-snug">
+    <strong>Children's National Hospital</strong> · Student Developer · <em>Aug 2024 – May 2025</em>
+  </span>
+</div>
+
+Architected `TrachSense`, an IoT platform for real-time airway monitoring with low-latency alert streaming.
+<SkillChips skills={["Python", "FastAPI", "WebSocket", "Raspberry Pi"]} />
+
+---
+
+## Skills
+
+<div className="grid grid-cols-1 gap-2">
+  <div>
+    <span className="font-semibold text-rurikon-700">Languages</span> · Python, Rust, TypeScript, Java, SQL, OCaml, C/C++
+  </div>
+  <div>
+    <span className="font-semibold text-rurikon-700">Backend</span> · FastAPI, Node.js, PostgreSQL, REST APIs, WebSockets
+  </div>
+  <div>
+    <span className="font-semibold text-rurikon-700">AI/ML</span> · LlamaIndex, scikit-learn, OpenAI/Gemini APIs
+  </div>
+  <div>
+    <span className="font-semibold text-rurikon-700">Tools</span> · Docker, Git, AWS, Linux, Embedded Systems
+  </div>
+</div>
+
+---
+
+## Projects
+
+### [Know](https://github.com/ynbh/know) · Local Semantic Search CLI
+
+Hybrid search CLI with persistent vector store and incremental indexing.
+<SkillChips skills={["Python", "LlamaIndex", "Chroma", "BM25"]} />
+
+### [Walker](https://github.com/ynbh/walker) · Concurrent Link Validator
+
+High-performance Rust CLI for validating URLs in parallel.
+<SkillChips skills={["Rust", "Tokio", "reqwest"]} />
+
+### [Canvas MCP](https://github.com/ynbh/canvas-mcp) · LLM Course Assistant
+
+MCP server enabling LLM clients to query Canvas coursework data.
+<SkillChips skills={["TypeScript", "MCP", "Canvas API"]} />
+
+[View all projects →](/projects)
+
+---
+
+## Education
+
+<div className="flex items-start gap-3 mb-2 mt-2">
+  <Image src={umdLogo} alt="UMD Logo" width={32} height={32} className="rounded-full shrink-0" style={{marginTop: 4, marginBottom: 0}} />
+  <div className="leading-snug">
+    <div className="text-rurikon-700"><strong>University of Maryland</strong> · B.S. Computer Science, Minor in Math</div>
+    <div className="text-sm text-rurikon-500 mt-0.5"><em>2027</em> · GPA: 3.57 · <a href="/resume.pdf" target="_blank" className="font-medium text-rurikon-400 hover:text-rurikon-600 transition-colors">View Resume ↗</a></div>
+  </div>
+</div>
+
+---
+
+[thoughts](/thoughts) · [ybhat@umd.edu](mailto:ybhat@umd.edu) · [github](https://github.com/ynbh) · [linkedin](https://www.linkedin.com/in/yashasnbhat)

@@ -58,9 +58,9 @@ export const components: Record<
         draggable={false}
         {...(href?.startsWith('https://')
           ? {
-              target: '_blank',
-              rel: 'noopener noreferrer',
-            }
+            target: '_blank',
+            rel: 'noopener noreferrer',
+          }
           : {})}
         {...props}
       />
@@ -118,6 +118,7 @@ export const components: Record<
   Image,
   img: async ({ src, alt, title }) => {
     let img: React.ReactNode
+    const isSvg = src.endsWith('.svg')
 
     if (src.startsWith('https://')) {
       img = (
@@ -126,7 +127,7 @@ export const components: Record<
           src={src}
           alt={alt}
           quality={95}
-          placeholder='blur'
+          placeholder={isSvg ? undefined : 'blur'}
           draggable={false}
         />
       )
@@ -138,7 +139,7 @@ export const components: Record<
           src={image.default}
           alt={alt}
           quality={95}
-          placeholder='blur'
+          placeholder={isSvg ? undefined : 'blur'}
           draggable={false}
         />
       )

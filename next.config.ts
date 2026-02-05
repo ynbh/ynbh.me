@@ -10,6 +10,11 @@ export default withMDX()({
       destination: '/thoughts/:slug',
       permanent: false,
     },
+    {
+      source: '/resume',
+      destination: '/resume.pdf',
+      permanent: false,
+    },
   ],
   experimental: {
     mdxRs: {

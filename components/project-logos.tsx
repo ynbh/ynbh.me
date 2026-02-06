@@ -90,7 +90,7 @@ function LogoWithIcon({
 }) {
   return (
     <span
-      className='inline-flex items-center gap-1 whitespace-nowrap select-none text-black overflow-visible align-middle'
+      className='inline-flex items-center gap-1 whitespace-nowrap select-none text-black overflow-visible align-baseline'
       title={title}
     >
       {icon ? <span className='shrink-0 min-w-0 -ml-[1px]'>{icon}</span> : null}

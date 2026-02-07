@@ -90,12 +90,12 @@ function LogoWithIcon({
 }) {
   return (
     <span
-      className='inline-flex items-center gap-1 whitespace-nowrap select-none text-black overflow-visible align-baseline'
+      className='inline-flex items-center gap-1 whitespace-nowrap select-none text-black overflow-visible align-baseline [text-decoration:inherit]'
       title={title}
     >
       {icon ? <span className='shrink-0 min-w-0 -ml-[1px]'>{icon}</span> : null}
       <span
-        className='text-[16px] tracking-[-0.005em] leading-none'
+        className='text-[16px] tracking-[-0.005em] leading-none [text-decoration:inherit]'
         style={{
           // Use smaller opsz to make the logo more readable.
           fontVariationSettings: '"wght" 550, "opsz" 20',

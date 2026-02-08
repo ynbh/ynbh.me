@@ -6,15 +6,17 @@ import { ViewTransition } from 'react'
 
 import cn from 'clsx'
 import localFont from 'next/font/local'
+import { Google_Sans_Flex } from 'next/font/google'
+import { Google_Sans_Code } from 'next/font/google'
 import 'katex/dist/katex.min.css'
 
 import Navbar from '@/components/navbar'
 import './globals.css'
 
-const sans = localFont({
-  src: './_fonts/InterVariable.woff2',
-  preload: true,
+const googleSansFlex = Google_Sans_Flex({
+  subsets: ['latin'],
   variable: '--sans',
+  display: 'swap',
 })
 
 const serif = localFont({
@@ -23,10 +25,10 @@ const serif = localFont({
   variable: '--serif',
 })
 
-const mono = localFont({
-  src: './_fonts/IosevkaFixedCurly-ExtendedMedium.woff2',
-  preload: true,
+const mono = Google_Sans_Code({
+  subsets: ['latin'],
   variable: '--mono',
+  display: 'swap',
 })
 
 export const metadata: Metadata = {
@@ -53,7 +55,7 @@ export default function RootLayout({
     <html lang='en' className='overflow-x-hidden touch-manipulation'>
       <body
         className={cn(
-          sans.variable,
+          googleSansFlex.variable,
           serif.variable,
           mono.variable,
           'w-full p-6 sm:p-10 md:p-14',

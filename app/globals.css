@@ -1,5 +1,7 @@
 @import 'tailwindcss';
 @source "../mdx-components.tsx";
+@source "../components/**/*.tsx";
+@source "../app/**/*.{tsx,mdx}";
 
 @layer utilities {
   .font-thin {

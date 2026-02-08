@@ -3,6 +3,7 @@ export const metadata = {
 }
 
 import { SkillChips } from '@/components/skill-chips'
+import { ExperienceItem } from '@/components/experience-item'
 import Image from 'next/image'
 import umdLogo from '@/assets/umd.png'
 
@@ -28,32 +29,37 @@ I'm a CS & Math student at UMD, graduating in 2027. I like building LLM-powered 
 
 ## Experience
 
-<div className="flex items-center gap-3 mb-2">
-  <img src="/images/kuiper-logo.png" alt="Amazon" width={32} height={32} className="rounded shrink-0" style={{marginTop: 0, marginBottom: 0}} />
-  <span className="leading-snug">
-    <strong>Amazon Project Kuiper</strong> · Student Developer · <em>Jan – May 2024</em>
-  </span>
-</div>
+<ExperienceItem
+  logo="/images/kuiper-logo.png"
+  alt="Amazon"
+  company="Amazon Project Kuiper"
+  role="Student Developer"
+  date="Jan – May 2024"
+/>
 
 Built APIs for satellite collision avoidance and a blockchain-integrated Space Safety Visualizer.
 <SkillChips skills={["Python", "FastAPI", "PostgreSQL", "Hyperledger"]} />
 
-<div className="flex items-center gap-3 mb-2 mt-6">
-  <img src="/images/bpcl-logo.png" alt="Bharat Petroleum" width={32} height={32} className="rounded shrink-0" style={{marginTop: 0, marginBottom: 0}} />
-  <span className="leading-snug">
-    <strong>Bharat Petroleum</strong> · SWE Intern · <em>Dec 2024 – Jan 2025</em>
-  </span>
-</div>
+<ExperienceItem
+  logo="/images/bpcl-logo.png"
+  alt="Bharat Petroleum"
+  company="Bharat Petroleum"
+  role="SWE Intern"
+  date="Dec 2024 – Jan 2025"
+  className="mt-6"
+/>
 
 Built an ML anomaly detection system to identify fraudulent distributors from transaction data.
 <SkillChips skills={["Python", "scikit-learn", "pandas", "PCA"]} />
 
-<div className="flex items-center gap-3 mb-2 mt-6">
-  <img src="/images/cnh-logo.png" alt="Children's National Hospital" width={32} height={32} className="rounded shrink-0" style={{marginTop: 0, marginBottom: 0}} />
-  <span className="leading-snug">
-    <strong>Children's National Hospital</strong> · Student Developer · <em>Aug 2024 – May 2025</em>
-  </span>
-</div>
+<ExperienceItem
+  logo="/images/cnh-logo.png"
+  alt="Children's National Hospital"
+  company="Children's National Hospital"
+  role="Student Developer"
+  date="Aug 2024 – May 2025"
+  className="mt-6"
+/>
 
 Architected `TrachSense`, an IoT platform for real-time airway monitoring with low-latency alert streaming.
 <SkillChips skills={["Python", "FastAPI", "WebSocket", "Raspberry Pi"]} />

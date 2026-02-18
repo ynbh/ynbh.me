@@ -47,5 +47,24 @@ export async function generateMetadata(props: {
   return {
     title: metadata.title,
     description: metadata.description,
+    openGraph: {
+      type: 'article',
+      title: metadata.title,
+      description: metadata.description,
+      url: `/thoughts/${params.slug}`,
+      images: [
+        {
+          url: `/thoughts/${params.slug}/opengraph-image`,
+          width: 1200,
+          height: 630,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: metadata.title,
+      description: metadata.description,
+      images: [`/thoughts/${params.slug}/opengraph-image`],
+    },
   }
 }

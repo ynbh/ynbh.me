@@ -32,12 +32,35 @@ const mono = Google_Sans_Code({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://ynbh.me'),
   title: {
     template: '%s - Yashas Bhat',
     default: 'Yashas Bhat',
   },
   description:
     'CS student at University of Maryland building backend systems and developer tools.',
+  openGraph: {
+    type: 'website',
+    siteName: 'Yashas Bhat',
+    title: 'Yashas Bhat',
+    description:
+      'CS student at University of Maryland building backend systems and developer tools.',
+    url: '/',
+    images: [
+      {
+        url: '/opengraph-image',
+        width: 1200,
+        height: 630,
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Yashas Bhat',
+    description:
+      'CS student at University of Maryland building backend systems and developer tools.',
+    images: ['/opengraph-image'],
+  },
 }
 
 export const viewport: Viewport = {

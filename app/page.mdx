@@ -9,7 +9,7 @@ import umdLogo from '@/assets/umd.png'
 
 <h1 className="text-4xl sm:text-5xl font-bold mb-6 text-rurikon-700 tracking-tight">Yashas Bhat</h1>
 
-I'm a CS & Math student at UMD, graduating in 2027. I like building LLM-powered tools, backend systems, and developer infrastructure. Most of my projects start as problems I wanted to solve for myself.
+I'm a computer science student at UMD, graduating in 2027. I build backend systems, developer tools, and AI workflows, usually starting from problems I want to solve for myself.
 
 <div className="my-8">
   <div className="inline-flex items-center gap-2.5 px-4 py-2 bg-green-50/50 border border-green-100 rounded-full text-green-700 text-base font-serif italic whitespace-nowrap leading-none">
@@ -30,39 +30,39 @@ I'm a CS & Math student at UMD, graduating in 2027. I like building LLM-powered 
 ## Experience
 
 <ExperienceItem
-  logo="/images/kuiper-logo.png"
-  alt="Amazon"
-  company="Amazon Project Kuiper"
-  role="Student Developer"
-  date="Jan – May 2024"
-/>
-
-Built APIs for satellite collision avoidance and a blockchain-integrated Space Safety Visualizer.
-<SkillChips skills={["Python", "FastAPI", "PostgreSQL", "Hyperledger"]} />
-
-<ExperienceItem
-  logo="/images/bpcl-logo.png"
-  alt="Bharat Petroleum"
-  company="Bharat Petroleum"
-  role="SWE Intern"
-  date="Dec 2024 – Jan 2025"
-  className="mt-6"
-/>
-
-Built an ML anomaly detection system to identify fraudulent distributors from transaction data.
-<SkillChips skills={["Python", "scikit-learn", "pandas", "PCA"]} />
-
-<ExperienceItem
   logo="/images/cnh-logo.png"
   alt="Children's National Hospital"
   company="Children's National Hospital"
   role="Student Developer"
   date="Aug 2024 – May 2025"
+/>
+
+Architected `TrachSense` and the backend behind `TrachHub`, building a CO2-to-mobile alert pipeline with sub-second WebSocket delivery and a breathing-state classifier that reduced false alerts by 10%.
+<SkillChips skills={["Python", "FastAPI", "WebSocket", "Raspberry Pi"]} />
+
+<ExperienceItem
+  logo="/images/bpcl-logo.png"
+  alt="Bharat Petroleum"
+  company="Bharat Petroleum"
+  role="Software Engineering Intern"
+  date="Dec 2024 – Jan 2025"
   className="mt-6"
 />
 
-Architected `TrachSense`, an IoT platform for real-time airway monitoring with low-latency alert streaming.
-<SkillChips skills={["Python", "FastAPI", "WebSocket", "Raspberry Pi"]} />
+Built a DBSCAN + Isolation Forest anomaly detection pipeline that flagged 950+ potentially fraudulent distributors across 320K+ customer verification transactions.
+<SkillChips skills={["Python", "scikit-learn", "pandas", "PCA"]} />
+
+<ExperienceItem
+  logo="/images/kuiper-logo.png"
+  alt="Amazon"
+  company="Amazon Project Kuiper"
+  role="Student Developer"
+  date="Jan – May 2024"
+  className="mt-6"
+/>
+
+Engineered 3 core APIs for Project Kuiper and built the FastAPI/PostgreSQL backend for a blockchain-integrated Space Safety Visualizer used by 10+ satellite operators.
+<SkillChips skills={["Python", "FastAPI", "PostgreSQL", "Hyperledger"]} />
 
 ---
 
@@ -70,16 +70,16 @@ Architected `TrachSense`, an IoT platform for real-time airway monitoring with l
 
 <div className="grid grid-cols-1 gap-2">
   <div>
-    <span className="font-semibold text-rurikon-700">Languages</span> · Python, Rust, TypeScript, Java, SQL, OCaml, C/C++
+    <span className="font-semibold text-rurikon-700">Languages</span> · Python, Rust, TypeScript, JavaScript, Java, SQL (Postgres), OCaml, C/C++
   </div>
   <div>
-    <span className="font-semibold text-rurikon-700">Backend</span> · FastAPI, Node.js, PostgreSQL, REST APIs, WebSockets
+    <span className="font-semibold text-rurikon-700">Frameworks</span> · FastAPI, Flask, Axum, Next.js, React, Node.js, Tokio, FastMCP, Typer
   </div>
   <div>
-    <span className="font-semibold text-rurikon-700">AI/ML</span> · LlamaIndex, scikit-learn, OpenAI/Gemini APIs
+    <span className="font-semibold text-rurikon-700">AI & Data</span> · LlamaIndex, Chroma, scikit-learn, OpenAI/Gemini APIs
   </div>
   <div>
-    <span className="font-semibold text-rurikon-700">Tools</span> · Docker, Git, AWS, Linux, Embedded Systems
+    <span className="font-semibold text-rurikon-700">Infra</span> · Docker, Git, Linux/UNIX, AWS, Raspberry Pi, Arduino, IoT
   </div>
 </div>
 
@@ -87,20 +87,25 @@ Architected `TrachSense`, an IoT platform for real-time airway monitoring with l
 
 ## Projects
 
+### [Canvas MCP](https://github.com/ynbh/canvasmcp) · Canvas LMS MCP Server
+
+MCP server and CLI that exposes live Canvas coursework data and workflows to AI clients.
+<SkillChips skills={["Python", "FastMCP", "Canvas API", "Typer"]} />
+
+### [Codexport](https://github.com/ynbh/codexport) · Codex Session Export Tool
+
+Rust CLI and local web app for browsing Codex chat history and exporting sessions to clean Markdown.
+<SkillChips skills={["Rust", "Axum", "Rusqlite", "Tokio"]} />
+
+### [Testudot](https://github.com/ynbh/testudot) · Course Change Monitor
+
+Dockerized FastAPI service that monitors Testudo course pages and sends alerts on new sections, seat changes, and removals.
+<SkillChips skills={["Python", "FastAPI", "Redis", "Docker"]} />
+
 ### [Know](https://github.com/ynbh/know) · Local Semantic Search CLI
 
-Hybrid search CLI with persistent vector store and incremental indexing.
+Local search CLI with persistent Chroma storage, incremental indexing, and hybrid retrieval.
 <SkillChips skills={["Python", "LlamaIndex", "Chroma", "BM25"]} />
-
-### [Walker](https://github.com/ynbh/walker) · Concurrent Link Validator
-
-High-performance Rust CLI for validating URLs in parallel.
-<SkillChips skills={["Rust", "Tokio", "reqwest"]} />
-
-### [Canvas MCP](https://github.com/ynbh/canvas-mcp) · LLM Course Assistant
-
-MCP server enabling LLM clients to query Canvas coursework data.
-<SkillChips skills={["TypeScript", "MCP", "Canvas API"]} />
 
 [View all projects →](/projects)
 
@@ -111,7 +116,7 @@ MCP server enabling LLM clients to query Canvas coursework data.
 <div className="flex items-start gap-3 mb-2 mt-2">
   <Image src={umdLogo} alt="UMD Logo" width={32} height={32} className="rounded-full shrink-0" style={{marginTop: 4, marginBottom: 0}} />
   <div className="leading-snug">
-    <div className="text-rurikon-700"><strong>University of Maryland</strong> · B.S. Computer Science, Minor in Math</div>
+    <div className="text-rurikon-700"><strong>University of Maryland</strong> · B.S. Computer Science, Minor in Mathematics</div>
     <div className="text-sm text-rurikon-500 mt-0.5"><em>2027</em> · GPA: 3.57 · <a href="/resume.pdf" target="_blank" className="font-medium">View Resume ↗</a></div>
   </div>
 </div>

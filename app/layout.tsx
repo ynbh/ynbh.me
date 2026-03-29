@@ -6,15 +6,16 @@ import { ViewTransition } from 'react'
 
 import cn from 'clsx'
 import localFont from 'next/font/local'
-import { Google_Sans_Flex } from 'next/font/google'
-import { Google_Sans_Code } from 'next/font/google'
+import { Google_Sans_Code, TikTok_Sans } from 'next/font/google'
 import 'katex/dist/katex.min.css'
 
 import Navbar from '@/components/navbar'
 import './globals.css'
 
-const googleSansFlex = Google_Sans_Flex({
+const tiktokSans = TikTok_Sans({
   subsets: ['latin'],
+  weight: 'variable',
+  axes: ['opsz'],
   variable: '--sans',
   display: 'swap',
 })
@@ -38,13 +39,13 @@ export const metadata: Metadata = {
     default: 'Yashas Bhat',
   },
   description:
-    'CS student at University of Maryland building backend systems and developer tools.',
+    'Computer science student at the University of Maryland building backend systems, developer tools, and AI workflows.',
   openGraph: {
     type: 'website',
     siteName: 'Yashas Bhat',
     title: 'Yashas Bhat',
     description:
-      'CS student at University of Maryland building backend systems and developer tools.',
+      'Computer science student at the University of Maryland building backend systems, developer tools, and AI workflows.',
     url: '/',
     images: [
       {
@@ -58,7 +59,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Yashas Bhat',
     description:
-      'CS student at University of Maryland building backend systems and developer tools.',
+      'Computer science student at the University of Maryland building backend systems, developer tools, and AI workflows.',
     images: ['/opengraph-image'],
   },
 }
@@ -78,7 +79,7 @@ export default function RootLayout({
     <html lang='en' className='overflow-x-hidden touch-manipulation'>
       <body
         className={cn(
-          googleSansFlex.variable,
+          tiktokSans.variable,
           serif.variable,
           mono.variable,
           'w-full p-6 sm:p-10 md:p-14',

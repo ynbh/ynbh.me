@@ -1,7 +1,7 @@
 export const metadata = {
   title: 'Projects',
   description:
-    'Software engineering portfolio: Rust systems programming, Python backend APIs, AI/ML integrations.',
+    'Selected work across backend systems, developer tools, and applied AI.',
 }
 
 # Projects
@@ -13,45 +13,57 @@ import { SkillChips } from '@/components/skill-chips'
 
 ---
 
-## [<Plaintext title="Know" />](https://github.com/ynbh/know) · Local Semantic Search CLI
+## [<Plaintext title="Canvas MCP" />](https://github.com/ynbh/canvasmcp) · Canvas LMS MCP Server
 
-Hybrid search CLI with persistent vector store for local document search.
-
-![Know RAG Pipeline](diagrams/know.svg)
-
-- Reduced re-indexing time by **67%** through incremental indexing and chunk deduplication
-- BM25 + RRF fusion for improved retrieval quality
-- Persistent Chroma store for fast subsequent queries
-
-<SkillChips skills={["Python", "LlamaIndex", "Chroma", "BM25"]} />
-
----
-
-## [<Plaintext title="tsr" />](https://github.com/ynbh/tsr) · Terminal Transcription CLI
-
-Local audio/video transcription via whisper.cpp with auto model management.
-
-![tsr Pipeline](diagrams/tsr.svg)
-
-- Auto-downloads and manages Whisper models (`tiny` -> `large`)
-- Supports **12+ audio/video formats** + any URL yt-dlp supports (YouTube, etc.)
-- Outputs SRT subtitles, JSON, or plaintext
-
-<SkillChips skills={["Python", "whisper.cpp", "FFmpeg", "CLI"]} />
-
----
-
-## [<Plaintext title="Canvas MCP" />](https://github.com/ynbh/canvas-mcp) · LLM Course Assistant
-
-Model Context Protocol server enabling LLM clients to query Canvas coursework data.
+MCP server and CLI that exposes Canvas coursework data and workflows to AI clients.
 
 ![Canvas MCP Architecture](diagrams/canvas-mcp.svg)
 
-- **12+ API endpoints** for assignment-aware AI Q&A
-- Enables Claude, GPT-4, and other LLM clients to understand coursework context
-- Zero-config integration with Model Context Protocol
+- Exposes assignments, discussions, files, grades, modules, and calendar data to LLM clients
+- Implements **25+ tools**, course-context snapshots, and URL resolution for assignment-aware workflows
+- Supports browser-cookie, session-cookie, and API-token auth across MCP and CLI flows
 
-<SkillChips skills={["TypeScript", "MCP", "Canvas API"]} />
+<SkillChips skills={["Python", "FastMCP", "Canvas API", "Typer"]} />
+
+---
+
+## [<Plaintext title="Codexport" />](https://github.com/ynbh/codexport) · Codex Session Export Tool
+
+Rust CLI and local web app for browsing Codex chat history and exporting sessions to clean Markdown.
+
+- Parses local Codex data from SQLite and renders transcripts for review, reuse, and documentation
+- Ships a local Axum interface for browsing sessions without digging through raw app storage
+- Supports clean Markdown export and print-friendly transcript workflows
+
+<SkillChips skills={["Rust", "Axum", "Rusqlite", "Comrak", "Tokio"]} />
+
+---
+
+## [<Plaintext title="Testudot" />](https://github.com/ynbh/testudot) · Course Change Monitor
+
+Backend service monitoring UMD course availability with automated alerts.
+
+![Testudot Monitoring Flow](diagrams/testudot.svg)
+
+- Dockerized FastAPI service that sends HTML alerts when course schedule state changes
+- Detects new sections, seat-availability changes, and removals through state diffing
+- Uses local JSON persistence in development and Redis-backed storage in production
+
+<SkillChips skills={["Python", "FastAPI", "Typer", "Redis", "Docker"]} />
+
+---
+
+## [<Plaintext title="Know" />](https://github.com/ynbh/know) · Local Semantic Search CLI
+
+Hybrid search CLI with persistent vector storage for local document search.
+
+![Know RAG Pipeline](diagrams/know.svg)
+
+- Watches folders, chunks **20+ file types**, and stores a persistent Chroma index for local retrieval
+- BM25 + RRF fusion for higher-quality hybrid search results
+- Reduced re-indexing time by **67%** through incremental indexing and chunk deduplication
+
+<SkillChips skills={["Python", "LlamaIndex", "Chroma", "BM25"]} />
 
 ---
 
@@ -69,42 +81,17 @@ High-performance Rust CLI that validates URLs in parallel.
 
 ---
 
-## [<Plaintext title="Testudot" />](https://github.com/ynbh/testudot) · Course Seat Monitor
+## [<Plaintext title="tsr" />](https://github.com/ynbh/tsr) · Terminal Transcription CLI
 
-Backend service monitoring UMD course availability with automated alerts.
+Local audio/video transcription via whisper.cpp with auto model management.
 
-![Testudot Monitoring Flow](diagrams/testudot.svg)
+![tsr Pipeline](diagrams/tsr.svg)
 
-- Async monitoring with `asyncio.gather()` for parallel scraping
-- State diffing algorithm detects new sections, seat changes, and removals
-- Dual persistence: local JSON (dev) + Upstash Redis (prod)
-- Dockerized deployment with `uv` for reproducible builds
+- Auto-downloads and manages Whisper models (`tiny` -> `large`)
+- Supports **12+ audio/video formats** and any URL yt-dlp supports
+- Outputs SRT subtitles, JSON, or plaintext
 
-<SkillChips skills={["Python", "FastAPI", "Redis", "Docker"]} />
-
----
-
-## [<Plaintext title="NoteRouter" />](https://github.com/ynbh/noterouter) · LLM Note Organizer
-
-LLM-powered CLI that automatically categorizes notes into a taxonomy.
-
-- Structured LLM outputs using Pydantic models with JSON schema generation
-- Interactive TUI with Textual: split-screen directory tree + markdown viewer
-- Automated file reorganization with approval workflow
-
-<SkillChips skills={["Python", "Gemini API", "Pydantic", "Textual"]} />
-
----
-
-## [<Plaintext title="PlanetTerp Agent" />](https://github.com/ynbh/pterp-agent) · Course Research Assistant
-
-Chat-based AI assistant synthesizing course data from multiple sources.
-
-- OpenAI function calling for structured tool use
-- Multi-source aggregation: PlanetTerp API + Reddit sentiment
-- Conversation persistence with JSON export
-
-<SkillChips skills={["Python", "OpenAI API", "Function Calling"]} />
+<SkillChips skills={["Python", "whisper.cpp", "FFmpeg", "CLI"]} />
 
 ---
 

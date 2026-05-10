@@ -71,18 +71,11 @@ export const viewport: Viewport = {
   ],
 }
 
-// Inlined into <head> to apply the saved theme before paint and avoid a
-// light-mode flash. Defaults to dark when nothing is stored.
+// Runs synchronously at the top of <body> before any paint. Default is dark;
+// flips to light only if the user explicitly chose light. Wrapped in IIFE so
+// nothing leaks; try/catch in case localStorage is blocked (private mode, etc).
 const themeInitScript = `
-(function () {
-  try {
-    var stored = localStorage.getItem('theme');
-    var theme = stored === 'light' ? 'light' : 'dark';
-    if (theme === 'dark') document.documentElement.classList.add('dark');
-  } catch (e) {
-    document.documentElement.classList.add('dark');
-  }
-})();
+(function(){try{var t=localStorage.getItem('theme');if(t==='light'){document.documentElement.classList.remove('dark');}else{document.documentElement.classList.add('dark');}}catch(e){document.documentElement.classList.add('dark');}})();
 `
 
 export default function RootLayout({
@@ -91,10 +84,11 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang='en' className='overflow-x-hidden touch-manipulation' suppressHydrationWarning>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
-      </head>
+    <html
+      lang='en'
+      className='dark overflow-x-hidden touch-manipulation'
+      suppressHydrationWarning
+    >
       <body
         className={cn(
           geistSans.variable,
@@ -106,6 +100,10 @@ export default function RootLayout({
           'antialiased'
         )}
       >
+        <script
+          dangerouslySetInnerHTML={{ __html: themeInitScript }}
+          suppressHydrationWarning
+        />
         <div className='fixed h-10 sm:h-14 w-full top-0 left-0 z-30 pointer-events-none content-fade-out' />
         <div className='mx-auto max-w-2xl px-6 sm:px-10 pt-10 sm:pt-14 pb-16 flex flex-col min-h-screen'>
           <Navbar />

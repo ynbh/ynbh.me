@@ -1,6 +1,6 @@
 import type { MDXComponents } from 'mdx/types'
 import type { ReactNode } from 'react'
-import { codeToHtml, createCssVariablesTheme } from 'shiki'
+import { codeToHtml } from 'shiki'
 import Link from 'next/link'
 import Image from 'next/image'
 
@@ -9,8 +9,6 @@ import { InlineMath, BlockMath } from 'react-katex'
 
 import { Card } from '@/components/tweet-card'
 import { BlockSideTitle } from '@/components/block-sidetitle'
-
-const cssVariablesTheme = createCssVariablesTheme({})
 
 export const components: Record<
   string,
@@ -81,13 +79,13 @@ export const components: Record<
     if (typeof props.children === 'string') {
       const code = await codeToHtml(props.children, {
         lang: 'jsx',
-        theme: cssVariablesTheme,
-        // theme: 'min-light',
-        // theme: 'snazzy-light',
+        themes: {
+          light: 'vitesse-light',
+          dark: 'vitesse-dark',
+        },
+        defaultColor: false,
         transformers: [
           {
-            // Since we're using dangerouslySetInnerHTML, the code and pre
-            // tags should be removed.
             pre: (hast) => {
               if (hast.children.length !== 1) {
                 throw new Error('<pre>: Expected a single <code> child')
@@ -106,7 +104,7 @@ export const components: Record<
 
       return (
         <code
-          className='inline shiki css-variables text-[0.805rem] sm:text-[13.8px] md:text-[0.92rem]'
+          className='inline shiki-host text-[0.805rem] sm:text-[13.8px] md:text-[0.92rem]'
           dangerouslySetInnerHTML={{ __html: code }}
         />
       )

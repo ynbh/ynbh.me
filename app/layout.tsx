@@ -6,16 +6,15 @@ import { ViewTransition } from 'react'
 
 import cn from 'clsx'
 import localFont from 'next/font/local'
-import { Google_Sans_Code, TikTok_Sans } from 'next/font/google'
+import { Geist, Geist_Mono } from 'next/font/google'
 import 'katex/dist/katex.min.css'
 
 import Navbar from '@/components/navbar'
+import Footer from '@/components/footer'
 import './globals.css'
 
-const tiktokSans = TikTok_Sans({
+const geistSans = Geist({
   subsets: ['latin'],
-  weight: 'variable',
-  axes: ['opsz'],
   variable: '--sans',
   display: 'swap',
 })
@@ -26,7 +25,7 @@ const serif = localFont({
   variable: '--serif',
 })
 
-const mono = Google_Sans_Code({
+const mono = Geist_Mono({
   subsets: ['latin'],
   variable: '--mono',
   display: 'swap',
@@ -66,9 +65,25 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   maximumScale: 1,
-  colorScheme: 'only light',
-  themeColor: '#fcfcfc',
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#fcfcfc' },
+    { media: '(prefers-color-scheme: dark)', color: '#0a0b0d' },
+  ],
 }
+
+// Inlined into <head> to apply the saved theme before paint and avoid a
+// light-mode flash. Defaults to dark when nothing is stored.
+const themeInitScript = `
+(function () {
+  try {
+    var stored = localStorage.getItem('theme');
+    var theme = stored === 'light' ? 'light' : 'dark';
+    if (theme === 'dark') document.documentElement.classList.add('dark');
+  } catch (e) {
+    document.documentElement.classList.add('dark');
+  }
+})();
+`
 
 export default function RootLayout({
   children,
@@ -76,29 +91,32 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang='en' className='overflow-x-hidden touch-manipulation'>
+    <html lang='en' className='overflow-x-hidden touch-manipulation' suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
       <body
         className={cn(
-          tiktokSans.variable,
+          geistSans.variable,
           serif.variable,
           mono.variable,
-          'w-full p-6 sm:p-10 md:p-14',
+          'min-h-screen w-full',
           'text-sm leading-6 sm:text-[15px] sm:leading-7 md:text-base md:leading-7',
           'text-rurikon-500',
           'antialiased'
         )}
       >
-        <div className='fixed sm:hidden h-6 sm:h-10 md:h-14 w-full top-0 left-0 z-30 pointer-events-none content-fade-out' />
-        <div className='flex flex-col mobile:flex-row'>
+        <div className='fixed h-10 sm:h-14 w-full top-0 left-0 z-30 pointer-events-none content-fade-out' />
+        <div className='mx-auto max-w-2xl px-6 sm:px-10 pt-10 sm:pt-14 pb-16 flex flex-col min-h-screen'>
           <Navbar />
-          <main className='relative flex-1 max-w-2xl [contain:inline-size]'>
-            <div className='absolute w-full h-px opacity-50 bg-rurikon-border right-0 mobile:right-auto mobile:left-0 mobile:w-px mobile:h-full mobile:opacity-100 mix-blend-multiply' />
+          <main className='relative flex-1 mt-10 sm:mt-14'>
             <ViewTransition name='crossfade'>
-              <article className='pl-0 pt-6 mobile:pt-0 mobile:pl-6 sm:pl-10 md:pl-14'>
+              <article>
                 {children}
               </article>
             </ViewTransition>
           </main>
+          <Footer />
         </div>
         <Analytics />
       </body>

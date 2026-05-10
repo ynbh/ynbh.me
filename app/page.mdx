@@ -4,24 +4,93 @@ export const metadata = {
 
 import { SkillChips } from '@/components/skill-chips'
 import { ExperienceItem } from '@/components/experience-item'
+import { ProjectTile } from '@/components/project-tile'
 import Image from 'next/image'
 import umdLogo from '@/assets/umd.png'
 
-<h1 className="text-4xl sm:text-5xl font-bold mb-6 text-rurikon-700 tracking-tight">Yashas Bhat</h1>
-
-<div className="mb-2">
-  I'm a computer science student at UMD, graduating in 2027. I build backend systems, developer tools, and AI workflows, usually starting from problems I want to solve for myself.
+<div className="text-rurikon-500 mb-2">
+  cs student at umd, graduating in 2027. <em className="text-rurikon-700">incoming sde intern at amazon, summer '26.</em> apart from classes, you'll find me
 </div>
 
-<div className="mt-1 mb-8 text-sm text-rurikon-500">
-  <a href="/resume.pdf" target="_blank">Resume</a>
-  <span className="mx-2">·</span>
-  <a href="https://github.com/ynbh" target="_blank">GitHub</a>
-  <span className="mx-2">·</span>
-  <a href="https://www.linkedin.com/in/yashasnbhat" target="_blank">LinkedIn</a>
+<ul className="mt-3 space-y-2 list-disc list-outside pl-5 marker:text-rurikon-300">
+  <li>
+    building backend systems, dev tools, and AI workflows — usually starting from problems I want to solve for myself (canvas-mcp, codexport, testudot, know)
+  </li>
+  <li>
+    shipping side projects to <a href="https://crates.io/crates/link-walker" target="_blank">crates.io</a> and <a href="https://pypi.org/project/planet-terp-client/" target="_blank">pypi</a>, mostly Rust + Python CLIs
+  </li>
+  <li>
+    interning on real systems — <a href="#experience">cnh's TrachSense alert pipeline</a>, BPCL's anomaly detection, Amazon Project Kuiper's APIs
+  </li>
+</ul>
+
+<div className="mt-6 text-sm text-rurikon-400">
+  <a href="/resume.pdf" target="_blank">resume</a>
+  <span className="mx-2 text-rurikon-300">·</span>
+  <a href="https://github.com/ynbh" target="_blank">github</a>
+  <span className="mx-2 text-rurikon-300">·</span>
+  <a href="https://www.linkedin.com/in/yashasnbhat" target="_blank">linkedin</a>
+  <span className="mx-2 text-rurikon-300">·</span>
+  <a href="mailto:ybhat@umd.edu">email</a>
 </div>
 
-<h2 className="font-semibold mt-8 mb-7 text-rurikon-600 text-balance">Experience</h2>
+---
+
+## stuff i've built
+
+<div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-7 mt-7">
+
+<ProjectTile
+  title="Canvas MCP"
+  description="Live Canvas LMS data exposed to AI clients — 25+ tools across assignments, grades, modules, and calendar."
+  href="https://github.com/ynbh/canvasmcp"
+  repo="ynbh/canvasmcp"
+/>
+
+<ProjectTile
+  title="Codexport"
+  description="Browse local Codex chat history and export sessions to clean Markdown via Axum + SQLite."
+  href="https://github.com/ynbh/codexport"
+  repo="ynbh/codexport"
+/>
+
+<ProjectTile
+  title="Testudot"
+  description="FastAPI service that watches UMD's Testudo and alerts on new sections and seat changes."
+  href="https://github.com/ynbh/testudot"
+  repo="ynbh/testudot"
+/>
+
+<ProjectTile
+  title="Know"
+  description="Hybrid local semantic search CLI — Chroma + BM25 + RRF with incremental indexing across 20+ file types."
+  href="https://github.com/ynbh/know"
+  repo="ynbh/know"
+/>
+
+<ProjectTile
+  title="Walker"
+  description="Concurrent Rust link validator — 500+ links in under 10s. Published on crates.io."
+  href="https://github.com/ynbh/walker"
+  repo="ynbh/walker"
+/>
+
+<ProjectTile
+  title="tsr"
+  description="Local audio/video transcription via whisper.cpp with auto model management."
+  href="https://github.com/ynbh/tsr"
+  repo="ynbh/tsr"
+/>
+
+</div>
+
+<div className="mt-6 text-sm">
+  <a href="/projects">view all projects →</a>
+</div>
+
+---
+
+## experience
 
 <ExperienceItem
   logo="/images/cnh-logo.png"
@@ -60,61 +129,27 @@ Engineered 3 core APIs for Project Kuiper and built the FastAPI/PostgreSQL backe
 
 ---
 
-## Skills
+## skills
 
-<div className="grid grid-cols-1 gap-2">
-  <div>
-    <span className="font-semibold text-rurikon-700">Languages</span> · Python, Rust, TypeScript, JavaScript, Java, SQL (Postgres), OCaml, C/C++
-  </div>
-  <div>
-    <span className="font-semibold text-rurikon-700">Frameworks</span> · FastAPI, Flask, Axum, Next.js, React, Node.js, Tokio, FastMCP, Typer
-  </div>
-  <div>
-    <span className="font-semibold text-rurikon-700">AI & Data</span> · LlamaIndex, Chroma, scikit-learn, OpenAI/Gemini APIs
-  </div>
-  <div>
-    <span className="font-semibold text-rurikon-700">Infra</span> · Docker, Git, Linux/UNIX, AWS, Raspberry Pi, Arduino, IoT
-  </div>
-</div>
+<dl className="mt-2 space-y-1.5 [&_p]:!mt-0">
+  <div><dt className="inline font-semibold text-rurikon-700">Languages</dt><dd className="inline"> · Python, Rust, TypeScript, JavaScript, Java, SQL (Postgres), OCaml, C/C++</dd></div>
+  <div><dt className="inline font-semibold text-rurikon-700">Frameworks</dt><dd className="inline"> · FastAPI, Flask, Axum, Next.js, React, Node.js, Tokio, FastMCP, Typer</dd></div>
+  <div><dt className="inline font-semibold text-rurikon-700">AI & Data</dt><dd className="inline"> · LlamaIndex, Chroma, scikit-learn, OpenAI/Gemini APIs</dd></div>
+  <div><dt className="inline font-semibold text-rurikon-700">Infra</dt><dd className="inline"> · Docker, Git, Linux/UNIX, AWS, Raspberry Pi, Arduino, IoT</dd></div>
+</dl>
 
 ---
 
-## Projects
-
-### [Canvas MCP](https://github.com/ynbh/canvasmcp) · Canvas LMS MCP Server
-
-MCP server and CLI that exposes live Canvas coursework data and workflows to AI clients.
-<SkillChips skills={["Python", "FastMCP", "Canvas API", "Typer"]} />
-
-### [Codexport](https://github.com/ynbh/codexport) · Codex Session Export Tool
-
-Rust CLI and local web app for browsing Codex chat history and exporting sessions to clean Markdown.
-<SkillChips skills={["Rust", "Axum", "Rusqlite", "Tokio"]} />
-
-### [Testudot](https://github.com/ynbh/testudot) · Course Change Monitor
-
-Dockerized FastAPI service that monitors Testudo course pages and sends alerts on new sections, seat changes, and removals.
-<SkillChips skills={["Python", "FastAPI", "Redis", "Docker"]} />
-
-### [Know](https://github.com/ynbh/know) · Local Semantic Search CLI
-
-Local search CLI with persistent Chroma storage, incremental indexing, and hybrid retrieval.
-<SkillChips skills={["Python", "LlamaIndex", "Chroma", "BM25"]} />
-
-[View all projects →](/projects)
-
----
-
-## Education
+## education
 
 <div className="flex items-start gap-3 mb-2 mt-2">
   <Image src={umdLogo} alt="UMD Logo" width={32} height={32} className="rounded-full shrink-0" style={{marginTop: 4, marginBottom: 0}} />
   <div className="leading-snug">
     <div className="text-rurikon-700"><strong>University of Maryland</strong> · B.S. Computer Science, Minor in Mathematics</div>
-    <div className="text-sm text-rurikon-500 mt-0.5"><em>2027</em> · GPA: 3.57 · <a href="/resume.pdf" target="_blank" className="font-medium">View Resume ↗</a></div>
+    <div className="text-sm text-rurikon-400 mt-0.5"><em>2027</em> · GPA: 3.57 · <a href="/resume.pdf" target="_blank" className="font-medium">view resume ↗</a></div>
   </div>
 </div>
 
----
-
-[thoughts](/thoughts) · [ybhat@umd.edu](mailto:ybhat@umd.edu) · [github](https://github.com/ynbh) · [linkedin](https://www.linkedin.com/in/yashasnbhat)
+<div className="mt-12 text-sm text-rurikon-400">
+  wanna chat? <a href="mailto:ybhat@umd.edu">drop me a line.</a>
+</div>

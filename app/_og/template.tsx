@@ -21,7 +21,7 @@ function clip(value: string, limit: number) {
 type FontDef = {
   name: string
   data: ArrayBuffer
-  weight: number
+  weight: 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900
   style: 'normal' | 'italic'
 }
 

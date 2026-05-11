@@ -14,6 +14,16 @@ function formatSlug(slug: string) {
     .join(' ')
 }
 
+function formatDate(input?: string): string | undefined {
+  if (!input) return undefined
+  const normalized = input.replaceAll('.', '-')
+  const date = new Date(normalized)
+  if (Number.isNaN(date.getTime())) return input
+  return date
+    .toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
+    .toLowerCase()
+}
+
 export default async function Image(props: {
   params: Promise<{
     slug: string
@@ -24,8 +34,11 @@ export default async function Image(props: {
   const metadata = module.metadata ?? {}
 
   return renderOgImage({
-    eyebrow: 'Thoughts',
+    eyebrow: 'ynbh.me',
+    meta: formatDate(metadata.date) ?? 'thoughts',
     title: metadata.title ?? formatSlug(slug),
     description: metadata.description,
+    footLeft: 'ynbh.me/thoughts',
+    footRight: 'yashas bhat',
   })
 }

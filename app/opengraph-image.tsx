@@ -9,8 +9,13 @@ export const contentType = 'image/png'
 
 export default async function Image() {
   return renderOgImage({
+    eyebrow: 'ynbh.me',
+    meta: 'maryland · cs · 2027',
     title: 'Yashas Bhat',
+    accent: 'Bhat',
     description:
-      'CS student at University of Maryland building backend systems and developer tools.',
+      'cs student at umd building backend systems, dev tools, and AI workflows.',
+    footLeft: 'github.com/ynbh',
+    footRight: 'ynbh.me',
   })
 }

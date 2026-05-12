@@ -39,6 +39,34 @@ Rust CLI and local web app for browsing Codex chat history and exporting session
 
 ---
 
+## [<Plaintext title="lc" />](https://github.com/ynbh/lc) · LeetCode Workflow CLI
+
+Rust CLI for LeetCode practice loops, from problem discovery to local editing, example runs, guarded checks, and real submissions.
+
+![lc Workflow](diagrams/lc.svg)
+
+- Uses public LeetCode metadata for daily challenges, problem lookup, lists, and profile views
+- Probes browser cookies for authenticated judge runs and submissions without a manual token-copying workflow
+- Creates starter solution files with metadata headers so `test`, `check`, `run`, and `submit` can infer the target problem
+
+<SkillChips skills={["Rust", "Clap", "Reqwest", "Tokio", "LeetCode API"]} />
+
+---
+
+## [<Plaintext title="Piazza CLI" />](https://github.com/ynbh/piazza-cli) · Terminal Piazza Reader
+
+Read-only Rust CLI for browsing Piazza classes, feeds, unread posts, and recent-thread search from a terminal.
+
+![Piazza CLI Flow](diagrams/piazza-cli.svg)
+
+- Copies Piazza browser cookies into a local `session.json` with `chrome`, `edge`, `firefox`, and `safari` support
+- Lists classes, reads feeds, fetches posts from class/post IDs or URLs, and extracts tags/unread threads
+- Supports `pretty`, `json`, `jsonl`, and `ids` output for human reading or shell pipelines
+
+<SkillChips skills={["Rust", "Clap", "Reqwest", "cookie-scoop", "Piazza API"]} />
+
+---
+
 ## [<Plaintext title="Testudot" />](https://github.com/ynbh/testudot) · Course Change Monitor
 
 Backend service monitoring UMD course availability with automated alerts.

@@ -1,4 +1,7 @@
+'use client'
+
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 
 export interface ProjectTileProps {
   title: string
@@ -37,7 +40,34 @@ export function ProjectTile({
   const previewUrl =
     image ?? (repo ? `https://opengraph.githubassets.com/1/${repo}` : null)
 
-  const surfaceStyle: React.CSSProperties = previewUrl
+  const [imageLoaded, setImageLoaded] = useState(false)
+  const [imageFailed, setImageFailed] = useState(false)
+
+  useEffect(() => {
+    if (!previewUrl) {
+      setImageLoaded(false)
+      setImageFailed(false)
+      return
+    }
+
+    setImageLoaded(false)
+    setImageFailed(false)
+
+    const img = new window.Image()
+    img.onload = () => setImageLoaded(true)
+    img.onerror = () => setImageFailed(true)
+    img.src = previewUrl
+
+    return () => {
+      img.onload = null
+      img.onerror = null
+    }
+  }, [previewUrl])
+
+  const showPreview = Boolean(previewUrl) && imageLoaded && !imageFailed
+  const showPlaceholder = !showPreview
+
+  const surfaceStyle: React.CSSProperties = showPreview
     ? {
         backgroundImage: `url(${previewUrl})`,
         backgroundSize: 'cover',
@@ -47,8 +77,6 @@ export function ProjectTile({
         background:
           gradient ?? fallbackGradients[hash(title) % fallbackGradients.length],
       }
-
-  const showOverlay = !previewUrl
 
   return (
     <Link
@@ -62,7 +90,7 @@ export function ProjectTile({
         className='relative w-full aspect-[2/1] rounded-md overflow-hidden ring-1 ring-rurikon-border transition-all duration-200 group-hover:ring-rurikon-300 group-hover:-translate-y-0.5'
         style={surfaceStyle}
       >
-        {showOverlay && (
+        {showPlaceholder && (
           <>
             <div
               aria-hidden
@@ -74,9 +102,9 @@ export function ProjectTile({
             />
             <div className='absolute inset-0 p-4 sm:p-5 flex flex-col justify-between'>
               <div className='flex items-start justify-between gap-3'>
-                {subtitle && (
+                {(subtitle || repo) && (
                   <div className='text-[10px] uppercase tracking-[0.18em] text-white/60 font-medium'>
-                    {subtitle}
+                    {subtitle ?? 'github'}
                   </div>
                 )}
                 {meta && (

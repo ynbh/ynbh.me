@@ -9,20 +9,10 @@ import Image from 'next/image'
 import umdLogo from '@/assets/umd.png'
 
 <div className="text-rurikon-500 mb-2">
-  cs student at umd, graduating in 2027. <em className="text-rurikon-700">incoming sde intern at amazon, summer '26.</em> apart from classes, you'll find me
+  cs student at umd, graduating in 2027.{' '}
+  <em className="text-rurikon-700">sde intern at aws on the nitro ssd team, summer '26.</em>{' '}
+  I work on low-level software, backend systems, dev tools, and AI workflows, and I'm a big believer in using agents to do more.
 </div>
-
-<ul className="mt-3 space-y-2 list-disc list-outside pl-5 marker:text-rurikon-300">
-  <li>
-    building backend systems, dev tools, and AI workflows — usually starting from problems I want to solve for myself (canvas-mcp, codexport, testudot, know)
-  </li>
-  <li>
-    shipping side projects to <a href="https://crates.io/crates/link-walker" target="_blank">crates.io</a> and <a href="https://pypi.org/project/planet-terp-client/" target="_blank">pypi</a>, mostly Rust + Python CLIs
-  </li>
-  <li>
-    interning on real systems — <a href="#experience">cnh's TrachSense alert pipeline</a>, BPCL's anomaly detection, Amazon Project Kuiper's APIs
-  </li>
-</ul>
 
 <div className="mt-6 text-sm text-rurikon-400">
   <a href="/resume.pdf" target="_blank">resume</a>
@@ -93,11 +83,23 @@ import umdLogo from '@/assets/umd.png'
 ## experience
 
 <ExperienceItem
+  logo="/images/aws-logo.png"
+  alt="Amazon Web Services"
+  company="Amazon Web Services"
+  role="SDE Intern"
+  date="Summer 2026"
+/>
+
+Working on the Nitro SSD team to help reduce turnaround time for shipping.
+<SkillChips skills={["AWS", "C/C++", "Linux"]} />
+
+<ExperienceItem
   logo="/images/cnh-logo.png"
   alt="Children's National Hospital"
   company="Children's National Hospital"
   role="Student Developer"
   date="Aug 2024 – May 2025"
+  className="mt-6"
 />
 
 Architected `TrachSense` and the backend behind `TrachHub`, building a CO2-to-mobile alert pipeline with sub-second WebSocket delivery and a breathing-state classifier that reduced false alerts by 10%.

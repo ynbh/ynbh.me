@@ -1,4 +1,7 @@
+'use client'
+
 import Link from 'next/link'
+import { useState } from 'react'
 
 export interface ProjectTileProps {
   title: string
@@ -37,18 +40,13 @@ export function ProjectTile({
   const previewUrl =
     image ?? (repo ? `https://opengraph.githubassets.com/1/${repo}` : null)
 
-  const surfaceStyle: React.CSSProperties = previewUrl
-    ? {
-        backgroundImage: `url(${previewUrl})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      }
-    : {
-        background:
-          gradient ?? fallbackGradients[hash(title) % fallbackGradients.length],
-      }
+  const [imageFailed, setImageFailed] = useState(false)
+  const showPlaceholder = !previewUrl || imageFailed
 
-  const showOverlay = !previewUrl
+  const surfaceStyle: React.CSSProperties = {
+    background:
+      gradient ?? fallbackGradients[hash(title) % fallbackGradients.length],
+  }
 
   return (
     <Link
@@ -62,7 +60,15 @@ export function ProjectTile({
         className='relative w-full aspect-[2/1] rounded-md overflow-hidden ring-1 ring-rurikon-border transition-all duration-200 group-hover:ring-rurikon-300 group-hover:-translate-y-0.5'
         style={surfaceStyle}
       >
-        {showOverlay && (
+        {previewUrl && !imageFailed && (
+          <img
+            src={previewUrl}
+            alt=''
+            className='absolute inset-0 h-full w-full object-cover'
+            onError={() => setImageFailed(true)}
+          />
+        )}
+        {showPlaceholder && (
           <>
             <div
               aria-hidden
@@ -74,9 +80,9 @@ export function ProjectTile({
             />
             <div className='absolute inset-0 p-4 sm:p-5 flex flex-col justify-between'>
               <div className='flex items-start justify-between gap-3'>
-                {subtitle && (
+                {(subtitle || repo) && (
                   <div className='text-[10px] uppercase tracking-[0.18em] text-white/60 font-medium'>
-                    {subtitle}
+                    {subtitle ?? 'github'}
                   </div>
                 )}
                 {meta && (

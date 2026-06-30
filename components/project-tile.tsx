@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 export interface ProjectTileProps {
   title: string
@@ -40,43 +40,13 @@ export function ProjectTile({
   const previewUrl =
     image ?? (repo ? `https://opengraph.githubassets.com/1/${repo}` : null)
 
-  const [imageLoaded, setImageLoaded] = useState(false)
   const [imageFailed, setImageFailed] = useState(false)
+  const showPlaceholder = !previewUrl || imageFailed
 
-  useEffect(() => {
-    if (!previewUrl) {
-      setImageLoaded(false)
-      setImageFailed(false)
-      return
-    }
-
-    setImageLoaded(false)
-    setImageFailed(false)
-
-    const img = new window.Image()
-    img.onload = () => setImageLoaded(true)
-    img.onerror = () => setImageFailed(true)
-    img.src = previewUrl
-
-    return () => {
-      img.onload = null
-      img.onerror = null
-    }
-  }, [previewUrl])
-
-  const showPreview = Boolean(previewUrl) && imageLoaded && !imageFailed
-  const showPlaceholder = !showPreview
-
-  const surfaceStyle: React.CSSProperties = showPreview
-    ? {
-        backgroundImage: `url(${previewUrl})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      }
-    : {
-        background:
-          gradient ?? fallbackGradients[hash(title) % fallbackGradients.length],
-      }
+  const surfaceStyle: React.CSSProperties = {
+    background:
+      gradient ?? fallbackGradients[hash(title) % fallbackGradients.length],
+  }
 
   return (
     <Link
@@ -90,6 +60,14 @@ export function ProjectTile({
         className='relative w-full aspect-[2/1] rounded-md overflow-hidden ring-1 ring-rurikon-border transition-all duration-200 group-hover:ring-rurikon-300 group-hover:-translate-y-0.5'
         style={surfaceStyle}
       >
+        {previewUrl && !imageFailed && (
+          <img
+            src={previewUrl}
+            alt=''
+            className='absolute inset-0 h-full w-full object-cover'
+            onError={() => setImageFailed(true)}
+          />
+        )}
         {showPlaceholder && (
           <>
             <div

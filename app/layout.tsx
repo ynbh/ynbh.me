@@ -31,8 +31,17 @@ const mono = Geist_Mono({
   display: 'swap',
 })
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim()
+const metadataBase = new URL(
+  siteUrl
+    ? siteUrl.startsWith('http')
+      ? siteUrl
+      : `https://${siteUrl}`
+    : 'https://ynbh.me',
+)
+
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://ynbh.me'),
+  metadataBase,
   title: {
     template: '%s - Yashas Bhat',
     default: 'Yashas Bhat',

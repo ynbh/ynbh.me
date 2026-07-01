@@ -9,7 +9,7 @@ interface ExperienceItemProps {
 
 export function ExperienceItem({ logo, alt, company, role, date, className = '' }: ExperienceItemProps) {
     return (
-        <div className={`flex items-center gap-2.5 mb-2 ${className}`}>
+        <div className={`flex items-center gap-2.5 ${className}`}>
             <img
                 src={logo}
                 alt={alt}

@@ -23,7 +23,7 @@ export default withMDX()({
     turbopackFileSystemCacheForDev: true,
     turbopackFileSystemCacheForBuild: true,
   },
-  transpilePackages: ['shiki'],
+  transpilePackages: ['shiki', 'pele'],
   images: {
     contentDispositionType: 'inline',
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",

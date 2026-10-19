@@ -268,13 +268,30 @@ article {
   }
 }
 
-/* Mermaid / flowchart SVGs are baked light-mode. In dark mode wrap them
-   on a soft backdrop so they don't float as disconnected islands. */
-.dark article img[src$=".svg"],
-.dark article :where(img[alt*="iagram"], img[alt*="low"], img[alt*="ipeline"], img[alt*="rchitecture"]) {
-  background-color: #f3f4f6;
-  padding: 12px;
-  border-radius: 6px;
+/* Pele diagrams. Colors follow the rurikon scale, which already flips in
+   .dark, so light and dark stay in sync without a second render. */
+.diagram {
+  --pele-bg: var(--background);
+  --pele-fg: var(--color-rurikon-700);
+  --pele-muted: var(--color-rurikon-400);
+  --pele-line: var(--color-rurikon-400);
+  --pele-surface: var(--surface);
+  --pele-surface-alt: var(--color-rurikon-50);
+  --pele-border: var(--color-rurikon-300);
+  --pele-accent: var(--color-rurikon-500);
+  --pele-error: var(--color-rurikon-500);
+  --pele-font: var(--sans), ui-sans-serif, system-ui, sans-serif;
+  --pele-font-mono: var(--mono), ui-monospace, monospace;
+  --pele-radius: 2px;
+  --pele-title-weight: 500;
+  --pele-heading-weight: 500;
+  --pele-bold-weight: 600;
+}
+
+.diagram svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
 }
 
 .content-fade-out {

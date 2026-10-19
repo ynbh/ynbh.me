@@ -9,6 +9,7 @@ import { InlineMath, BlockMath } from 'react-katex'
 
 import { Card } from '@/components/tweet-card'
 import { BlockSideTitle } from '@/components/block-sidetitle'
+import { Diagram } from '@/components/diagram'
 
 export const components: Record<
   string,
@@ -113,6 +114,7 @@ export const components: Record<
     return <code className='inline' {...props} />
   },
   Card,
+  Diagram,
   Image,
   img: async ({ src, alt, title }) => {
     let img: React.ReactNode

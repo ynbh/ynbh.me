@@ -17,7 +17,7 @@ import { SkillChips } from '@/components/skill-chips'
 
 MCP server and CLI that exposes Canvas coursework data and workflows to AI clients.
 
-![Canvas MCP Architecture](diagrams/canvas-mcp.svg)
+<Diagram name="canvas-mcp" />
 
 - Exposes assignments, discussions, files, grades, modules, and calendar data to LLM clients
 - Implements **25+ tools**, course-context snapshots, and URL resolution for assignment-aware workflows
@@ -31,6 +31,8 @@ MCP server and CLI that exposes Canvas coursework data and workflows to AI clien
 
 Rust CLI and local web app for browsing Codex chat history and exporting sessions to clean Markdown.
 
+<Diagram name="codexport" />
+
 - Parses local Codex data from SQLite and renders transcripts for review, reuse, and documentation
 - Ships a local Axum interface for browsing sessions without digging through raw app storage
 - Supports clean Markdown export and print-friendly transcript workflows
@@ -43,7 +45,7 @@ Rust CLI and local web app for browsing Codex chat history and exporting session
 
 Rust CLI for LeetCode practice loops, from problem discovery to local editing, example runs, guarded checks, and real submissions.
 
-![lc Workflow](diagrams/lc.svg)
+<Diagram name="lc" />
 
 - Uses public LeetCode metadata for daily challenges, problem lookup, lists, and profile views
 - Probes browser cookies for authenticated judge runs and submissions without a manual token-copying workflow
@@ -57,7 +59,7 @@ Rust CLI for LeetCode practice loops, from problem discovery to local editing, e
 
 Read-only Rust CLI for browsing Piazza classes, feeds, unread posts, and recent-thread search from a terminal.
 
-![Piazza CLI Flow](diagrams/piazza-cli.svg)
+<Diagram name="piazza-cli" />
 
 - Copies Piazza browser cookies into a local `session.json` with `chrome`, `edge`, `firefox`, and `safari` support
 - Lists classes, reads feeds, fetches posts from class/post IDs or URLs, and extracts tags/unread threads
@@ -71,7 +73,7 @@ Read-only Rust CLI for browsing Piazza classes, feeds, unread posts, and recent-
 
 Backend service monitoring UMD course availability with automated alerts.
 
-![Testudot Monitoring Flow](diagrams/testudot.svg)
+<Diagram name="testudot" />
 
 - Dockerized FastAPI service that sends HTML alerts when course schedule state changes
 - Detects new sections, seat-availability changes, and removals through state diffing
@@ -85,7 +87,7 @@ Backend service monitoring UMD course availability with automated alerts.
 
 Hybrid search CLI with persistent vector storage for local document search.
 
-![Know RAG Pipeline](diagrams/know.svg)
+<Diagram name="know" />
 
 - Watches folders, chunks **20+ file types**, and stores a persistent Chroma index for local retrieval
 - BM25 + RRF fusion for higher-quality hybrid search results
@@ -99,7 +101,7 @@ Hybrid search CLI with persistent vector storage for local document search.
 
 High-performance Rust CLI that validates URLs in parallel.
 
-![Walker Flow](diagrams/walker.svg)
+<Diagram name="walker" />
 
 - Validates **500+ links in &lt;10 seconds** using Tokio async runtime
 - Connection pooling with configurable thread count
@@ -113,7 +115,7 @@ High-performance Rust CLI that validates URLs in parallel.
 
 Local audio/video transcription via whisper.cpp with auto model management.
 
-![tsr Pipeline](diagrams/tsr.svg)
+<Diagram name="tsr" />
 
 - Auto-downloads and manages Whisper models (`tiny` -> `large`)
 - Supports **12+ audio/video formats** and any URL yt-dlp supports
@@ -127,6 +129,8 @@ Local audio/video transcription via whisper.cpp with auto model management.
 
 Typed Python client for PlanetTerp API. Published to **[PyPI](https://pypi.org/project/planet-terp-client/)**.
 
+<Diagram name="planet-terp" />
+
 - Clean API: `course()`, `professor()`, `search()`, `grades()`
 - Type-safe dataclass models
 - Includes OpenAPI spec and demo scripts
@@ -135,8 +139,24 @@ Typed Python client for PlanetTerp API. Published to **[PyPI](https://pypi.org/p
 
 ---
 
-### Other Projects
+## [<Plaintext title="Watch" />](https://github.com/ynbh/watch) · Terminal show player
 
-- **[Watch](https://github.com/ynbh/watch)**: Terminal-first show search + playback. A Textual TUI that searches TMDB, browses results, and launches ad-less playback.
-- **[Rename](https://github.com/ynbh/rename)**: Batch renamer that walks a directory and asks a model for better file names.
-- **[Snippet-Verse](https://github.com/ynbh/snippet-verse)**: Stateless code sharing via URL encoding. Deployed on Vercel.
+Terminal-first show search and playback. A Textual TUI that searches TMDB, browses results, and launches ad-less playback.
+
+<Diagram name="watch" />
+
+---
+
+## [<Plaintext title="Rename" />](https://github.com/ynbh/rename) · Batch file renamer
+
+Walks a directory and asks a model for better file names.
+
+<Diagram name="rename" />
+
+---
+
+## [<Plaintext title="Snippet-Verse" />](https://github.com/ynbh/snippet-verse) · Stateless snippet sharing
+
+Shares code by encoding it into the URL. Deployed on Vercel.
+
+<Diagram name="snippet-verse" />

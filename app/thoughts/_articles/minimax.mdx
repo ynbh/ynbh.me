@@ -193,7 +193,9 @@ Now comes the exploring part. Exploration relies on whether the agent is maximiz
 - If it is X's turn (maximizing), we choose the move that produces the highest score.
 - If it is O's turn (minimizing), we choose the move that produces the lowest score.
 
-This alternating behaviour is what allows Minimax to simulate two players who are both playing optimally. 
+This alternating behaviour is what allows Minimax to simulate two players who are both playing optimally.
+
+<Diagram name="minimax" /> 
 
 After that, the implementation is just two symmetric loops. 
 We iterate over every legal move, simulate it, recurse to get a score for the resulting position, then undo the move. 

@@ -6,344 +6,257 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @layer utilities {
-  .font-thin       { font-variation-settings: 'wght' 100; }
-  .font-extralight { font-variation-settings: 'wght' 200; }
-  .font-light      { font-variation-settings: 'wght' 300; }
-  .font-normal     { font-variation-settings: 'wght' 400; }
-  .font-medium     { font-variation-settings: 'wght' 500; }
-  .font-semibold   { font-variation-settings: 'wght' 600; }
-  .font-bold       { font-variation-settings: 'wght' 700; }
-  .font-extrabold  { font-variation-settings: 'wght' 800; }
-  .font-black      { font-variation-settings: 'wght' 900; }
+  .font-normal { font-variation-settings: 'wght' 400; }
+  .font-medium { font-variation-settings: 'wght' 500; }
+  .font-semibold { font-variation-settings: 'wght' 600; }
+  .font-bold { font-variation-settings: 'wght' 650; }
 }
 
+/*
+  One palette, two modes. Hierarchy comes from these four inks, never from
+  extra type families or sizes:
+    ink   – titles, names, the active nav item
+    ink2  – body copy
+    ink3  – labels, meta, dates, secondary text
+    hair  – underlines and hairlines
+*/
 @theme {
-  --color-rurikon-50: #ebedef;
-  --color-rurikon-100: #d8dbdf;
-  --color-rurikon-200: #b3b9c1;
-  --color-rurikon-300: #8c95a1;
-  --color-rurikon-400: #697381;
-  --color-rurikon-500: #4a515b;
-  --color-rurikon-600: #3b4149;
-  --color-rurikon-700: #2b3035;
-  --color-rurikon-800: #1e2125;
-  --color-rurikon-900: #0e0f11;
-  --color-rurikon-950: #07080a;
+  --color-bg: #fcfcfc;
+  --color-ink: #171717;
+  --color-ink2: #5c5c5c;
+  --color-ink3: #8f8f8f;
+  --color-hair: #e4e4e4;
+  --color-wash: #f3f3f3;
 
-  --color-rurikon-border: #d8dbdfb3;
+  /* Legacy scale, mapped onto the palette so older MDX components stay coherent. */
+  --color-rurikon-50: #f3f3f3;
+  --color-rurikon-100: #ebebeb;
+  --color-rurikon-200: #e4e4e4;
+  --color-rurikon-300: #8f8f8f;
+  --color-rurikon-400: #8f8f8f;
+  --color-rurikon-500: #5c5c5c;
+  --color-rurikon-600: #171717;
+  --color-rurikon-700: #171717;
+  --color-rurikon-800: #171717;
+  --color-rurikon-border: #e4e4e4;
 
-  --font-sans: var(--sans), -apple-system, ui-sans-serif, system-ui,
-    sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-    'Noto Color Emoji';
-  --font-serif: var(--serif), ui-serif, Georgia, Cambria,
-    'Times New Roman', Times, serif;
-  --font-mono: var(--mono), ui-monospace, SFMono-Regular, Menlo, Monaco,
-    Consolas, 'Liberation Mono', 'Courier New', monospace;
-  --font-zh: var(--zh), var(--sans), -apple-system, ui-sans-serif, system-ui,
-    'PingFang SC', 'Hiragino Sans GB', 'Source Han Sans CN', sans-serif;
+  --font-sans: var(--sans), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: var(--mono), ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  --breakpoint-text: 1220px;
-  --breakpoint-mobile: 420px;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
 }
 
-:root {
-  --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif,
-    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-  --serif: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
-  --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-    'Liberation Mono', 'Courier New', monospace;
-  --zh: 'PingFang SC', 'Hiragino Sans GB', 'Source Han Sans CN',
-    'Microsoft YaHei', sans-serif;
-  --background: #fcfcfc;
-  --surface: #f7f7f7;
-  --fade-rgb: 252, 252, 252;
-}
-
-/* Dark mode: invert the rurikon scale so existing utility classes like
-   text-rurikon-500 (body) and text-rurikon-700 (heading) keep their semantic
-   meaning. Rurikon-50 becomes a near-bg surface, rurikon-700 becomes near-white. */
 .dark {
-  --background: #0a0b0d;
-  --surface: #14161a;
-  --fade-rgb: 10, 11, 13;
+  --color-bg: #0b0b0c;
+  --color-ink: #ededed;
+  --color-ink2: #a1a1a1;
+  --color-ink3: #6e6e6e;
+  --color-hair: #2a2a2a;
+  --color-wash: #161617;
 
-  --color-rurikon-50: #14161a;
-  --color-rurikon-100: #1e2125;
-  --color-rurikon-200: #2b3035;
-  --color-rurikon-300: #697381;
-  --color-rurikon-400: #8c95a1;
-  --color-rurikon-500: #b3b9c1;
-  --color-rurikon-600: #d8dbdf;
-  --color-rurikon-700: #ebedef;
-  --color-rurikon-800: #f5f6f8;
-  --color-rurikon-900: #fcfcfc;
-  --color-rurikon-950: #ffffff;
-  --color-rurikon-border: #2b3035cc;
+  --color-rurikon-50: #161617;
+  --color-rurikon-100: #1f1f20;
+  --color-rurikon-200: #2a2a2a;
+  --color-rurikon-300: #6e6e6e;
+  --color-rurikon-400: #6e6e6e;
+  --color-rurikon-500: #a1a1a1;
+  --color-rurikon-600: #ededed;
+  --color-rurikon-700: #ededed;
+  --color-rurikon-800: #ededed;
+  --color-rurikon-border: #2a2a2a;
 }
 
 html {
   color-scheme: light;
-  /* Always reserve space for the vertical scrollbar so navigating between
-     long and short pages doesn't shift the centered layout horizontally. */
   scrollbar-gutter: stable;
+  -webkit-text-size-adjust: 100%;
 }
 
 html.dark {
   color-scheme: dark;
 }
 
-:root {
-  --font-features: 'calt' 1, 'liga' 1, 'ss01' 1, 'ss03' 1;
-}
-
 body {
-  font-synthesis: none;
-  font-family: var(--sans), system-ui, -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue',
-    sans-serif;
-  font-feature-settings: var(--font-features);
+  background-color: var(--color-bg);
+  color: var(--color-ink2);
+  font-family: var(--font-sans);
+  font-feature-settings: 'cv11' 1, 'ss01' 1;
   font-variation-settings: 'wght' 400;
-  font-variant: common-ligatures contextual;
-  text-decoration-skip-ink: auto;
-  font-optical-sizing: auto;
+  font-synthesis: none;
   letter-spacing: 0;
-  background-color: var(--background);
-  text-rendering: geometricPrecision;
-
-  /* Debugger */
-  /* background: linear-gradient(to bottom, #ccc, var(--background) 1px);
-  background-size: 100% 1.75rem; */
+  text-rendering: optimizeLegibility;
+  transition: background-color 200ms ease, color 200ms ease;
 }
 
-/* Global link styling (exclude navbar) */
-:where(a):not(nav a) {
-  text-decoration: underline;
-  text-decoration-style: dotted;
-  text-decoration-color: var(--color-rurikon-200);
+/* Small meta text gets a hair of positive tracking; body stays at 0. */
+.meta {
+  font-size: 13px;
+  letter-spacing: 0.005em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Links: same colour as surrounding text, hairline underline that darkens on hover. */
+.link {
+  text-decoration-line: underline;
+  text-decoration-color: var(--color-hair);
   text-decoration-thickness: 1px;
   text-underline-offset: 3px;
-  transition: text-decoration-color 0.2s ease, text-decoration-style 0.2s ease;
+  transition: text-decoration-color 150ms ease, color 150ms ease;
 }
 
-:where(a):not(nav a):hover {
-  text-decoration: underline;
-  text-decoration-style: solid;
-  text-decoration-color: var(--color-rurikon-500);
-  text-decoration-thickness: 1px;
-}
-
-i,
-em,
-blockquote,
-nav,
-.sidenote {
-  font-family: var(--serif), Baskerville, Georgia, Cambria, 'Times New Roman',
-    Times, serif;
-  font-style: initial;
-  font-optical-sizing: auto;
-  font-variation-settings: 'wght' 480;
-  font-weight: 400;
-  font-variant-ligatures: contextual;
-  letter-spacing: -0.006em;
-}
-
-del {
-  text-decoration-thickness: 1px;
-}
-
-blockquote {
-  box-shadow: 1px 0 0 var(--color-rurikon-500) inset;
-}
-
-@media screen and (max-width: 420px) {
-  blockquote {
-    /* Make it wider on mobile with a lighter color */
-    box-shadow: 2px 0 0 var(--color-rurikon-300) inset;
+@media (hover: hover) and (pointer: fine) {
+  .link:hover {
+    text-decoration-color: var(--color-ink3);
   }
 }
 
-blockquote+blockquote {
-  display: flow-root;
+/* Every pressable thing answers the press. */
+.press {
+  transition: transform 160ms var(--ease-out);
 }
 
-main {
+.press:active {
+  transform: scale(0.97);
+}
+
+/* Rows: hover wash only where hover is real. */
+.row {
+  transition: background-color 150ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  a.row:hover {
+    background-color: var(--color-wash);
+  }
+}
+
+:focus-visible {
+  outline: 1px solid var(--color-ink3);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--color-ink) 12%, transparent);
+  color: var(--color-ink);
+}
+
+/* Page enter: sections fade up in sequence, 50ms apart. Decorative only, never blocks input. */
+@media (prefers-reduced-motion: no-preference) {
+  .enter > * {
+    animation: enter 300ms var(--ease-out) both;
+  }
+  .enter > *:nth-child(2) { animation-delay: 50ms; }
+  .enter > *:nth-child(3) { animation-delay: 100ms; }
+  .enter > *:nth-child(4) { animation-delay: 150ms; }
+  .enter > *:nth-child(5) { animation-delay: 200ms; }
+  .enter > *:nth-child(6) { animation-delay: 250ms; }
+  .enter > *:nth-child(n + 7) { animation-delay: 300ms; }
+}
+
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+/* ---------- Prose (MDX pages: projects, thoughts) ---------- */
+
+.prose {
   hanging-punctuation: first allow-end last;
-  hyphens: auto;
-  hyphenate-limit-chars: 10 6 6;
 }
 
 pre {
-  background-color: var(--surface);
-  contain: paint;
-  /* margin: 1.75rem 0; */
+  background-color: var(--color-wash);
+  border-radius: 8px;
   overflow-x: auto;
-  /* border-radius: 0.75rem; */
-  /* background-color: var(--color-rurikon-50); */
-  padding: 0.875rem 1.25rem;
+  padding: 0.875rem 1rem;
+  font-size: 13px;
   -webkit-font-smoothing: auto;
 }
 
 pre code {
   display: inline-block;
   padding: 0;
-  line-height: 1.45rem;
+  line-height: 1.6;
 }
 
 code {
-  font-family: var(--mono), ui-monospace, SFMono-Regular, Menlo, Monaco,
-    Consolas, 'Liberation Mono', 'Courier New', monospace;
-  word-spacing: -0.15em;
-  padding: 0.15em 0.2em;
+  font-family: var(--font-mono);
+  font-size: 0.9em;
 }
 
-/* Shiki dual-theme (vitesse-light / vitesse-dark). The `code` HTML carries
-   --shiki-light / --shiki-dark per token; we just decide which channel to
-   read based on the document's color mode. */
+:not(pre) > code {
+  padding: 0.1em 0.3em;
+  border-radius: 4px;
+  background-color: var(--color-wash);
+}
+
 .shiki-host,
 .shiki-host span {
   color: var(--shiki-light);
-  background-color: var(--shiki-light-bg);
+  background-color: transparent;
 }
 
 .dark .shiki-host,
 .dark .shiki-host span {
   color: var(--shiki-dark);
-  background-color: var(--shiki-dark-bg);
 }
 
-code span {
-  transition: color 0.2s;
+blockquote {
+  border-left: 1px solid var(--color-hair);
+  padding-left: 1rem;
+  color: var(--color-ink3);
 }
 
-article {
-  figure {
-    margin-top: 1.75rem;
-    line-height: 0;
-  }
-
-  .sidenote-content {
-
-    img,
-    video,
-    pre {
-      margin: 0;
-    }
-  }
-
-  .no-padding {
-    --frame-padding: 0;
-  }
-
-  .framed>img,
-  .framed>figure>span:first-child {
-    padding: var(--frame-padding, 0.875rem);
-    background: var(--frame-background, var(--background));
-    border: 1px solid var(--color-rurikon-border);
-  }
-
-  iframe {
-    width: 100%;
-    border: 1px solid var(--color-rurikon-border);
-    background-color: var(--background);
-  }
-
-  details {
-    margin-top: 1.75rem;
-    padding: 0.5rem 0;
-    border-top: 1px solid var(--color-rurikon-border);
-    border-bottom: 1px solid var(--color-rurikon-border);
-  }
-
-  details summary {
-    font-variation-settings: 'wght' 600;
-    margin-bottom: 0.25rem;
-  }
-
-  details summary::marker {
-    content: '';
-  }
-
-  details p:first-of-type {
-    margin-top: 0;
-  }
+article img {
+  border-radius: 8px;
 }
 
-/* Mermaid / flowchart SVGs are baked light-mode. In dark mode wrap them
-   on a soft backdrop so they don't float as disconnected islands. */
-.dark article img[src$=".svg"],
-.dark article :where(img[alt*="iagram"], img[alt*="low"], img[alt*="ipeline"], img[alt*="rchitecture"]) {
+/* Diagrams are drawn light; give them a quiet light card in dark mode. */
+.dark article img[src$='.svg'] {
   background-color: #f3f4f6;
   padding: 12px;
-  border-radius: 6px;
 }
 
-.content-fade-out {
-  background: linear-gradient(180deg,
-      rgba(var(--fade-rgb), 1.00) 0%,
-      rgba(var(--fade-rgb), 0.63) 14%,
-      rgba(var(--fade-rgb), 0.36) 29%,
-      rgba(var(--fade-rgb), 0.19) 43%,
-      rgba(var(--fade-rgb), 0.08) 57%,
-      rgba(var(--fade-rgb), 0.02) 71%,
-      rgba(var(--fade-rgb), 0.00) 86%,
-      rgba(var(--fade-rgb), 0.00) 100%);
+details {
+  margin-top: 1.5rem;
+  border-top: 1px solid var(--color-hair);
+  border-bottom: 1px solid var(--color-hair);
+  padding: 0.5rem 0;
 }
 
-*::selection {
-  background: #95a5ac40;
-  color: #485a74;
+details summary {
+  cursor: pointer;
+  color: var(--color-ink);
+  font-variation-settings: 'wght' 500;
 }
 
-.dark *::selection {
-  background: #95a5ac40;
-  color: #d8dbdf;
-}
-
-.dot-leaders {
-  text-align: end;
-  height: 1em;
-  overflow: hidden;
-  word-wrap: break-word;
-  letter-spacing: 6px;
-}
-
-.dot-leaders::after {
-  content: '······································································';
-}
+/* ---------- View transitions between pages ---------- */
 
 @supports (view-transition-name: none) {
-  @media not (prefers-reduced-motion: reduce) {
+  @media (prefers-reduced-motion: no-preference) {
     ::view-transition-old(crossfade) {
-      animation: hide 0.4s cubic-bezier(0.6, 0, 0.8, 1) forwards;
+      animation: vt-out 160ms ease-out forwards;
     }
-
     ::view-transition-new(crossfade) {
-      opacity: 0;
-      animation: appear .6s ease 0.2s forwards;
+      animation: vt-in 240ms var(--ease-out) forwards;
     }
   }
 }
 
-@keyframes hide {
-  0% {
-    opacity: 1;
-    filter: blur(0);
-  }
-
-  100% {
+@keyframes vt-out {
+  to {
     opacity: 0;
-    filter: blur(4px);
+    filter: blur(2px);
   }
 }
 
-@keyframes appear {
-  0% {
+@keyframes vt-in {
+  from {
     opacity: 0;
-    filter: blur(4px);
-  }
-
-  100% {
-    opacity: 1;
-    filter: blur(0);
+    filter: blur(2px);
   }
 }

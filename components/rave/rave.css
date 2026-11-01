@@ -1,0 +1,534 @@
+/* ==========================================================================
+   The Set: hold ⌥ → pad board → rave.
+   html[data-rave]      armed | playing | ending
+   html[data-rave-act]  kick | fill | build | silence | drop | outro
+   ========================================================================== */
+
+:root {
+  --rave-pink: #ff2e88;
+  --rave-amber: #ffb020;
+  --rave-cyan: #2ee6ff;
+  --rave-violet: #9d6bff;
+}
+
+/* ---------- The board ---------- */
+
+.rave-board {
+  position: fixed;
+  z-index: 60;
+  width: 216px;
+  padding: 10px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #1d1d20, #0d0d0f);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.7),
+    0 0 0 1px #050506,
+    0 24px 48px -16px rgba(0, 0, 0, 0.55),
+    0 4px 10px -4px rgba(0, 0, 0, 0.3);
+  transform-origin: var(--origin-x, 100%) var(--origin-y, 100%);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.rave-board[data-phase='ending'] {
+  pointer-events: none;
+}
+
+.rave-screen {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  height: 26px;
+  margin-bottom: 10px;
+  padding: 0 9px;
+  border-radius: 7px;
+  background: #060607;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.8), 0 1px 0 rgba(255, 255, 255, 0.05);
+  font: 500 10px/1 var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #5a5a5e;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.rave-screen[data-on] {
+  color: var(--rave-amber);
+  text-shadow: 0 0 6px rgba(255, 176, 32, 0.6);
+}
+
+.rave-screen .time {
+  font-variant-numeric: tabular-nums;
+  opacity: 0.7;
+}
+
+.rave-pads {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.rave-pad {
+  --c: #333;
+  height: 42px;
+  border-radius: 9px;
+  background: linear-gradient(180deg, #2b2b2f, #18181b);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.35),
+    0 2px 0 #040405,
+    0 3px 6px rgba(0, 0, 0, 0.5);
+  transition:
+    transform 100ms var(--ease-out),
+    box-shadow 160ms ease,
+    background 160ms ease;
+  cursor: pointer;
+  outline-offset: 3px;
+}
+
+.rave-pad:nth-child(1) { --c: var(--rave-pink); }
+.rave-pad:nth-child(2) { --c: var(--rave-amber); }
+.rave-pad:nth-child(3) { --c: var(--rave-cyan); }
+.rave-pad:nth-child(4) { --c: var(--rave-violet); }
+
+/* Booted: a faint LED behind the silicone. */
+.rave-pad[data-dim] {
+  background: radial-gradient(circle at 50% 35%, color-mix(in srgb, var(--c) 35%, #2b2b2f), #18181b 75%);
+}
+
+.rave-pad[data-lit] {
+  background: radial-gradient(
+    circle at 50% 35%,
+    color-mix(in srgb, var(--c) 40%, #fff) 0,
+    var(--c) 45%,
+    color-mix(in srgb, var(--c) 55%, #000) 100%
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    0 2px 0 #040405,
+    0 0 18px 2px color-mix(in srgb, var(--c) 70%, transparent),
+    0 0 42px 6px color-mix(in srgb, var(--c) 30%, transparent);
+}
+
+.rave-pad:active,
+.rave-pad[data-down] {
+  transform: translateY(2px) scale(0.94);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    0 0 0 #040405,
+    0 0 22px 4px color-mix(in srgb, var(--c) 60%, transparent);
+}
+
+.rave-caption {
+  margin-top: 8px;
+  text-align: center;
+  font: 400 10.5px/1 var(--font-mono);
+  color: #6e6e72;
+}
+
+/* ---------- Now playing pill ---------- */
+
+.rave-pill {
+  position: fixed;
+  z-index: 60;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+  padding: 0 6px 0 11px;
+  border-radius: 999px;
+  background: rgba(18, 18, 20, 0.85);
+  box-shadow: 0 0 0 1px #26262a;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  font: 400 11.5px/1 var(--font-mono);
+  color: #b9b9bd;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 300ms var(--ease-out), transform 300ms var(--ease-out);
+  pointer-events: none;
+}
+
+.rave-pill[data-show] {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+.rave-pill .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--rave-pink);
+  box-shadow: 0 0 8px var(--rave-pink);
+}
+
+.rave-pill button {
+  height: 18px;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: #222225;
+  color: #d4d4d8;
+  font: inherit;
+  font-size: 10.5px;
+}
+
+/* ---------- Stage layers ---------- */
+
+.rave-back,
+.rave-front {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 400ms ease;
+}
+
+.rave-back { z-index: 0; }
+.rave-front { z-index: 40; }
+
+html[data-rave='playing'] .rave-back,
+html[data-rave='playing'] .rave-front {
+  opacity: 1;
+}
+
+/* Spotlight that finds the name in the kick act, then drifts. */
+.rave-spot {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 520px;
+  height: 340px;
+  margin: -170px 0 0 -260px;
+  background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.11), transparent 62%);
+  opacity: 0;
+  transition: opacity 900ms ease;
+  will-change: transform;
+}
+
+html[data-rave-act='kick'] .rave-spot,
+html[data-rave-act='fill'] .rave-spot,
+html[data-rave-act='build'] .rave-spot {
+  opacity: 1;
+}
+
+/* Neon name behind the page, for the drop. */
+.rave-neon {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  translate: -50% -50%;
+  font-family: var(--font-sans);
+  font-size: min(22vw, 260px);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: transparent;
+  -webkit-text-stroke: 1.5px color-mix(in srgb, var(--rave-pink) 70%, transparent);
+  text-shadow: 0 0 40px color-mix(in srgb, var(--rave-pink) 35%, transparent);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+html[data-rave-act='drop'] .rave-neon {
+  opacity: 0.55;
+}
+
+/* Haze: a live spectrum, blurred into light. */
+.rave-haze {
+  position: absolute;
+  left: -4%;
+  right: -4%;
+  bottom: -2%;
+  height: 46vh;
+  display: flex;
+  align-items: flex-end;
+  filter: blur(18px) saturate(1.2);
+  opacity: 0;
+  transition: opacity 1200ms ease;
+  mask-image: linear-gradient(to top, #000 30%, transparent);
+}
+
+.rave-haze i {
+  flex: 1;
+  height: 100%;
+  transform-origin: bottom;
+  transform: scaleY(0.05);
+  background: linear-gradient(180deg, #ff3ea5, #ff6a00 30%, #ffd400 52%, #fffdf2 70%, #8ec9ff 85%, #0644e8);
+  will-change: transform;
+}
+
+html[data-rave-act='build'] .rave-haze { opacity: calc(0.25 + var(--build, 0) * 0.5); }
+html[data-rave-act='drop'] .rave-haze { opacity: 0.85; }
+html[data-rave-act='outro'] .rave-haze { opacity: 0.3; }
+
+/* Beams from the top corners, sweeping on a two-bar loop. */
+.rave-beams {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 800ms ease;
+  mix-blend-mode: screen;
+}
+
+.rave-beams i {
+  position: absolute;
+  top: -10vh;
+  width: 70vw;
+  height: 130vh;
+  transform-origin: top center;
+  animation: rave-sweep 3.716s var(--ease-in-out) infinite alternate;
+}
+
+.rave-beams i:nth-child(1) {
+  left: -35vw;
+  background: conic-gradient(from 168deg at 50% 0, transparent 0deg, rgba(255, 46, 136, 0.28) 6deg, transparent 12deg);
+}
+
+.rave-beams i:nth-child(2) {
+  left: -20vw;
+  background: conic-gradient(from 172deg at 50% 0, transparent 0deg, rgba(46, 230, 255, 0.22) 5deg, transparent 10deg);
+  animation-delay: -1.858s;
+}
+
+.rave-beams i:nth-child(3) {
+  right: -35vw;
+  background: conic-gradient(from 168deg at 50% 0, transparent 0deg, rgba(255, 176, 32, 0.26) 6deg, transparent 12deg);
+  animation-direction: alternate-reverse;
+}
+
+.rave-beams i:nth-child(4) {
+  right: -20vw;
+  background: conic-gradient(from 172deg at 50% 0, transparent 0deg, rgba(157, 107, 255, 0.24) 5deg, transparent 10deg);
+  animation-direction: alternate-reverse;
+  animation-delay: -1.858s;
+}
+
+@keyframes rave-sweep {
+  from { transform: rotate(-24deg); }
+  to { transform: rotate(24deg); }
+}
+
+html[data-rave-act='build'] .rave-beams { opacity: calc(var(--build, 0) * 1); }
+html[data-rave-act='drop'] .rave-beams { opacity: 1; }
+
+/* Lasers for the drop. */
+.rave-lasers {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  mix-blend-mode: screen;
+}
+
+.rave-lasers g {
+  transform-origin: 50% 0;
+  transform-box: view-box;
+  animation: rave-laser 7.43s var(--ease-in-out) infinite alternate;
+}
+
+.rave-lasers g:nth-child(2) {
+  animation-direction: alternate-reverse;
+}
+
+@keyframes rave-laser {
+  from { transform: rotate(-14deg); }
+  to { transform: rotate(14deg); }
+}
+
+html[data-rave-act='drop'] .rave-lasers { opacity: 0.9; }
+
+/* The crowd. Heads first, hands up at the drop. */
+.rave-crowd {
+  position: absolute;
+  left: -2%;
+  right: -2%;
+  bottom: -8px;
+  height: 128px;
+  color: #000;
+  transform: translateY(100%);
+  transition: transform 900ms var(--ease-out);
+  will-change: transform;
+}
+
+.rave-crowd svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.rave-crowd .up { opacity: 0; }
+
+html[data-rave-crowd] .rave-crowd { transform: translateY(38%); }
+html[data-rave-act='drop'] .rave-crowd { transform: translateY(0); }
+html[data-rave-act='drop'] .rave-crowd .up { opacity: 1; }
+html[data-rave-act='drop'] .rave-crowd .down { opacity: 0; }
+
+/* Silence: the countdown in the dark. */
+.rave-count {
+  position: absolute;
+  left: 50%;
+  top: 42%;
+  translate: -50% -50%;
+  font-family: var(--font-mono);
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.35em;
+  color: #d4d4d8;
+  white-space: nowrap;
+  opacity: 0;
+}
+
+/* Pad hits during the set: a colour wash, capped at 3/s in JS. */
+.rave-flash {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background: radial-gradient(circle at var(--fx, 50%) var(--fy, 100%), var(--flash, #ff2e88), transparent 70%);
+  mix-blend-mode: screen;
+}
+
+/* ---------- The page during the set ---------- */
+
+/* House lights down: the page takes the club palette. */
+html[data-rave='playing'] {
+  --color-bg: #050506;
+  --color-ink: #ffffff;
+  --color-ink2: #b9b9bd;
+  --color-ink3: #77777d;
+  --color-hair: #26262a;
+  --color-wash: #121214;
+  color-scheme: dark;
+}
+
+html[data-rave='playing'] body {
+  transition: background-color 600ms ease, color 600ms ease;
+}
+
+[data-rave-content] {
+  position: relative;
+  z-index: 10;
+  transform-origin: 50% 0;
+}
+
+/* Silence is a hard cut: no fade. */
+html[data-rave-act='silence'] [data-rave-content],
+html[data-rave-act='silence'] .rave-back,
+html[data-rave-act='silence'] .rave-crowd {
+  opacity: 0;
+  transition: none;
+}
+
+[data-rave-label] {
+  transition: color 300ms ease, text-shadow 300ms ease;
+}
+
+html[data-rave-labels] [data-rave-label] {
+  color: var(--rave-c, var(--rave-pink));
+  text-shadow: 0 0 14px color-mix(in srgb, var(--rave-c, var(--rave-pink)) 60%, transparent);
+}
+
+[data-rave-logo] {
+  transition: rotate 200ms var(--ease-out);
+}
+
+/* Meters replace the language/date meta once they join the set. */
+.rave-meter {
+  position: absolute;
+  right: 0;
+  bottom: 3px;
+  display: none;
+  gap: 2px;
+  align-items: flex-end;
+  height: 12px;
+}
+
+.rave-meter i {
+  width: 3px;
+  height: 100%;
+  border-radius: 1px;
+  background: var(--rave-c, var(--rave-cyan));
+  box-shadow: 0 0 6px var(--rave-c, var(--rave-cyan));
+  transform-origin: bottom;
+  transform: scaleY(0.2);
+}
+
+html[data-rave-meters] .rave-meter { display: flex; }
+html[data-rave-meters] .rave-meter-label { opacity: 0; }
+
+html[data-rave-act='drop'] [data-rave-name] {
+  text-shadow: 0 0 12px var(--rave-pink);
+}
+
+/* ---------- Souvenir: you were there ---------- */
+
+html[data-rave-souvenir] .record-label {
+  fill: var(--rave-pink);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html[data-rave-souvenir] .record-glyph svg {
+    animation: rave-spin 1.8s linear infinite;
+  }
+}
+
+@keyframes rave-spin {
+  to { rotate: 360deg; }
+}
+
+/* Touch screens have no Option key: hide that hint, the long-press still works. */
+@media (pointer: coarse) {
+  .hint-fine { display: none; }
+}
+
+/* ---------- Lights down / up: a circle wipe out of the board ---------- */
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+html[data-rave-wipe='down']::view-transition-new(root),
+html[data-rave-wipe='up']::view-transition-new(root) {
+  animation: rave-wipe 700ms var(--ease-in-out) both;
+}
+
+html[data-rave-wipe='up']::view-transition-new(root) {
+  animation-duration: 600ms;
+}
+
+@keyframes rave-wipe {
+  from { clip-path: circle(0 at var(--wipe-x, 100%) var(--wipe-y, 100%)); }
+  to { clip-path: circle(var(--wipe-r, 150vmax) at var(--wipe-x, 100%) var(--wipe-y, 100%)); }
+}
+
+/* ---------- Reduced motion: colour only, no movement or strobes ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .rave-beams i,
+  .rave-lasers g {
+    animation: none;
+  }
+  .rave-lasers,
+  .rave-flash {
+    display: none;
+  }
+  .rave-crowd {
+    transition: none;
+  }
+  html[data-rave-act='silence'] [data-rave-content],
+  html[data-rave-act='silence'] .rave-back {
+    opacity: 0.15;
+    transition: opacity 400ms ease;
+  }
+}

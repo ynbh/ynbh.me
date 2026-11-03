@@ -1,24 +1,40 @@
 /* ==========================================================================
-   The Set: hold ⌥ → pad board → rave.
-   html[data-rave]        armed | playing | ending
+   The Set: hold ⌥ → the record lifts out into a deck → the page is the show.
+   html[data-rave]        charging | loading | playing | landing
    html[data-rave-stage]  live (HTML-in-canvas) | raster — while the stage is up
    ========================================================================== */
 
 :root {
   --rave-pink: #ff2e88;
   --rave-amber: #ffb020;
-  --rave-cyan: #2ee6ff;
-  --rave-violet: #9d6bff;
 }
 
-/* ---------- The board ---------- */
+/* ---------- Holding ⌥: the record spins up ---------- */
 
-.rave-board {
+.record-glyph svg {
+  transition: transform 380ms var(--ease-out);
+}
+
+html[data-rave='charging'] .record-glyph svg {
+  transform: scale(1.35);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html[data-rave='charging'] .record-glyph svg {
+    animation: rave-spin 0.9s linear infinite;
+  }
+}
+
+/* ---------- The deck ---------- */
+
+.rave-deck {
   position: fixed;
   z-index: 60;
+  top: -9999px;
+  left: -9999px;
   width: 216px;
-  padding: 10px;
-  border-radius: 18px;
+  padding: 9px;
+  border-radius: 16px;
   background: linear-gradient(180deg, #1d1d20, #0d0d0f);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.09),
@@ -26,14 +42,8 @@
     0 0 0 1px #050506,
     0 24px 48px -16px rgba(0, 0, 0, 0.55),
     0 4px 10px -4px rgba(0, 0, 0, 0.3);
-  transform-origin: var(--origin-x, 100%) var(--origin-y, 100%);
   user-select: none;
   -webkit-user-select: none;
-  touch-action: manipulation;
-}
-
-.rave-board[data-phase='ending'] {
-  pointer-events: none;
 }
 
 .rave-screen {
@@ -41,23 +51,14 @@
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  height: 26px;
-  margin-bottom: 10px;
-  padding: 0 9px;
-  border-radius: 7px;
-  background: #060607;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.8), 0 1px 0 rgba(255, 255, 255, 0.05);
+  height: 22px;
+  padding: 0 4px;
   font: 500 10px/1 var(--font-mono);
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #5a5a5e;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-.rave-screen[data-on] {
   color: var(--rave-amber);
-  text-shadow: 0 0 6px rgba(255, 176, 32, 0.6);
+  text-shadow: 0 0 6px rgba(255, 176, 32, 0.5);
+  white-space: nowrap;
 }
 
 .rave-screen .time {
@@ -65,65 +66,19 @@
   opacity: 0.7;
 }
 
-.rave-pads {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-}
-
-.rave-pad {
-  --c: #333;
-  height: 42px;
-  border-radius: 9px;
-  background: linear-gradient(180deg, #2b2b2f, #18181b);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.1),
-    inset 0 -2px 0 rgba(0, 0, 0, 0.35),
-    0 2px 0 #040405,
-    0 3px 6px rgba(0, 0, 0, 0.5);
-  transition:
-    transform 100ms var(--ease-out),
-    box-shadow 160ms ease,
-    background 160ms ease;
-  cursor: pointer;
-  outline-offset: 3px;
-}
-
-.rave-pad:nth-child(1) { --c: var(--rave-pink); }
-.rave-pad:nth-child(2) { --c: var(--rave-amber); }
-.rave-pad:nth-child(3) { --c: var(--rave-cyan); }
-.rave-pad:nth-child(4) { --c: var(--rave-violet); }
-
-/* Booted: a faint LED behind the silicone. */
-.rave-pad[data-dim] {
-  background: radial-gradient(circle at 50% 35%, color-mix(in srgb, var(--c) 35%, #2b2b2f), #18181b 75%);
-}
-
-.rave-pad[data-lit] {
-  background: radial-gradient(
-    circle at 50% 35%,
-    color-mix(in srgb, var(--c) 40%, #fff) 0,
-    var(--c) 45%,
-    color-mix(in srgb, var(--c) 55%, #000) 100%
-  );
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.5),
-    0 2px 0 #040405,
-    0 0 18px 2px color-mix(in srgb, var(--c) 70%, transparent),
-    0 0 42px 6px color-mix(in srgb, var(--c) 30%, transparent);
-}
-
-.rave-pad:active,
-.rave-pad[data-down] {
-  transform: translateY(2px) scale(0.94);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.3),
-    0 0 0 #040405,
-    0 0 22px 4px color-mix(in srgb, var(--c) 60%, transparent);
+.rave-wave {
+  display: block;
+  width: 100%;
+  height: 30px;
+  margin-top: 4px;
+  border-radius: 6px;
+  background: #060607;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.8), 0 1px 0 rgba(255, 255, 255, 0.05);
+  padding: 0 4px;
 }
 
 .rave-caption {
-  margin-top: 8px;
+  margin-top: 7px;
   text-align: center;
   font: 400 10.5px/1 var(--font-mono);
   color: #6e6e72;
@@ -180,7 +135,8 @@
 
 /* ---------- The stage ---------- */
 
-/* The shader that VJs the page. It sits over the page and never takes input. */
+/* The page, rebuilt line by line in WebGL. It opens out of the record
+   (clip-path, animated from JS) and never takes input. */
 .rave-stage {
   position: fixed;
   inset: 0;
@@ -188,21 +144,35 @@
   width: 100vw;
   height: 100vh;
   pointer-events: none;
+  clip-path: circle(0 at 100% 100%);
 }
 
-/* HTML-in-canvas source: a live clone of the page, laid out inside a canvas.
-   It sits under the stage so the clone still gets hover while the set plays. */
+/* HTML-in-canvas source: a clone of the page laid out inside a canvas, so the
+   browser paints it for us. It must render to paint, so it is clipped away,
+   not hidden. */
 .rave-source {
   position: fixed;
-  inset: 0;
-  z-index: 49;
-  width: 100vw;
-  height: 100vh;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  clip-path: inset(50%);
 }
 
-/* The real page is underneath both: keep it out of reach until the lights are up. */
+/* The clone is painted once: entrance animations must already be finished. */
+.rave-source,
+.rave-source * {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* The real page is underneath; keep it out of reach while the stage is up. */
 html[data-rave-stage] [data-rave-content] {
   pointer-events: none;
+}
+
+/* The record stays clickable to stop the set. */
+html[data-rave-stage] [data-rave-record] {
+  pointer-events: auto;
 }
 
 /* ---------- Souvenir: you were there ---------- */
@@ -212,7 +182,7 @@ html[data-rave-souvenir] .record-label {
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  html[data-rave-souvenir] .record-glyph svg {
+  html[data-rave-souvenir]:not([data-rave='charging']) .record-glyph svg {
     animation: rave-spin 1.8s linear infinite;
   }
 }

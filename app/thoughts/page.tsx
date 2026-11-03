@@ -1,5 +1,5 @@
 import { promises as fs } from 'fs'
-import Link from 'next/link'
+import { Row, Rows } from '@/components/row'
 import path from 'path'
 
 export const metadata = {
@@ -28,33 +28,37 @@ export default async function Page() {
     items.push({
       slug: article.replace(/\.mdx$/, ''),
       title: module.metadata.title,
+      description: module.metadata.description as string | undefined,
       date: module.metadata.date || '-',
-      sort: Number(module.metadata.date?.replaceAll('.', '') || 0),
+      sort: Number(String(module.metadata.date ?? '').replace(/\D/g, '') || 0),
     })
   }
   items.sort((a, b) => b.sort - a.sort)
 
   return (
-    <div>
-      <ul>
+    <div className='enter'>
+      <h1 className='mb-3 text-[13px] font-normal text-ink3'>Writing</h1>
+      <Rows>
         {items.map((item) => (
-          <li key={item.slug} className='font-medium'>
-            <Link
-              href={`/thoughts/${item.slug}`}
-              className='group flex gap-1 -mx-2 px-2 justify-between items-center focus-visible:outline focus-visible:outline-rurikon-400 focus-visible:rounded-xs focus-visible:outline-dotted focus-visible:text-rurikon-600'
-              draggable={false}
-            >
-              <span className='block text-rurikon-500 group-hover:text-rurikon-700 group-focus-visible:text-rurikon-700'>
-                {item.title}
-              </span>
-              <span className='text-sm dot-leaders flex-1 text-rurikon-100 font-normal group-hover:text-rurikon-500 group-focus-visible:text-rurikon-500 transition-colors group-hover:transition-none leading-none' />
-              <time className='block text-rurikon-200 tabular-nums font-normal tracking-tighter group-hover:text-rurikon-500 group-focus-visible:text-rurikon-500 transition-colors group-hover:transition-none self-start'>
-                {item.date}
-              </time>
-            </Link>
-          </li>
+          <Row
+            key={item.slug}
+            href={`/thoughts/${item.slug}`}
+            title={item.title}
+            sub={item.description}
+            meta={formatDate(item.date)}
+          />
         ))}
-      </ul>
+      </Rows>
     </div>
   )
+}
+
+function formatDate(date: string) {
+  const d = new Date(date + 'T00:00:00Z')
+  if (Number.isNaN(d.getTime())) return date
+  return d.toLocaleDateString('en-US', {
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'UTC',
+  })
 }

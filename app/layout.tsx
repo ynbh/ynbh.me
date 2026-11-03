@@ -6,23 +6,19 @@ import { ViewTransition } from 'react'
 
 import cn from 'clsx'
 import localFont from 'next/font/local'
-import { Geist, Geist_Mono } from 'next/font/google'
+import { Geist_Mono } from 'next/font/google'
 import 'katex/dist/katex.min.css'
 
 import Navbar from '@/components/navbar'
 import Footer from '@/components/footer'
+import Rave from '@/components/rave/rave'
 import './globals.css'
 
-const geistSans = Geist({
-  subsets: ['latin'],
+const sans = localFont({
+  src: './_fonts/InterVariable.woff2',
   variable: '--sans',
   display: 'swap',
-})
-
-const serif = localFont({
-  src: './_fonts/LoraItalicVariable.woff2',
   preload: true,
-  variable: '--serif',
 })
 
 const mono = Geist_Mono({
@@ -76,7 +72,7 @@ export const viewport: Viewport = {
   maximumScale: 1,
   themeColor: [
     { media: '(prefers-color-scheme: light)', color: '#fcfcfc' },
-    { media: '(prefers-color-scheme: dark)', color: '#0a0b0d' },
+    { media: '(prefers-color-scheme: dark)', color: '#0b0b0c' },
   ],
 }
 
@@ -100,31 +96,27 @@ export default function RootLayout({
     >
       <body
         className={cn(
-          geistSans.variable,
-          serif.variable,
+          sans.variable,
           mono.variable,
-          'min-h-screen w-full',
-          'text-sm leading-6 sm:text-[15px] sm:leading-7 md:text-base md:leading-7',
-          'text-rurikon-500',
-          'antialiased'
+          'min-h-screen w-full text-[15px] leading-[1.6] antialiased'
         )}
       >
         <script
           dangerouslySetInnerHTML={{ __html: themeInitScript }}
           suppressHydrationWarning
         />
-        <div className='fixed h-10 sm:h-14 w-full top-0 left-0 z-30 pointer-events-none content-fade-out' />
-        <div className='mx-auto max-w-2xl px-6 sm:px-10 pt-10 sm:pt-14 pb-16 flex flex-col min-h-screen'>
+        <div
+          data-rave-content
+          className='mx-auto flex min-h-screen w-full max-w-[640px] flex-col px-6 pt-16 pb-12 sm:px-8 sm:pt-24 sm:pb-16'>
           <Navbar />
-          <main className='relative flex-1 mt-10 sm:mt-14'>
+          <main className='relative mt-10 flex-1'>
             <ViewTransition name='crossfade'>
-              <article>
-                {children}
-              </article>
+              <article>{children}</article>
             </ViewTransition>
           </main>
           <Footer />
         </div>
+        <Rave />
         <Analytics />
       </body>
     </html>

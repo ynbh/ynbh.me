@@ -15,43 +15,31 @@ export const components: Record<
   (props: any) => ReactNode | Promise<ReactNode>
 > = {
   h1: (props) => (
-    <h1
-      className='font-semibold mb-7 text-rurikon-600 text-balance'
-      {...props}
-    />
+    <h1 className='mb-6 font-medium text-ink text-balance' {...props} />
   ),
   h2: (props) => (
-    <h2
-      className='font-semibold mt-14 mb-7 text-rurikon-600 text-balance'
-      {...props}
-    />
+    <h2 className='mt-12 mb-3 font-medium text-ink text-balance' {...props} />
   ),
   h3: (props) => (
-    <h3
-      className='font-semibold mt-14 mb-7 text-rurikon-600 text-balance'
-      {...props}
-    />
+    <h3 className='mt-10 mb-3 text-[13px] font-normal text-ink3' {...props} />
   ),
   ul: (props) => (
     <ul
-      className='mt-7 list-disc list-outside marker:text-rurikon-200 pl-5'
+      className='mt-4 list-disc list-outside pl-5 marker:text-ink3 [&>li+li]:mt-1'
       {...props}
     />
   ),
   ol: (props) => (
     <ol
-      className='mt-7 list-decimal list-outside marker:text-rurikon-200 pl-5'
+      className='mt-4 list-decimal list-outside pl-5 marker:text-ink3 [&>li+li]:mt-1'
       {...props}
     />
   ),
-  li: (props) => <li className='pl-1.5' {...props} />,
+  li: (props) => <li className='pl-1' {...props} />,
   a: ({ href, ...props }) => {
     return (
       <Link
-        className='break-words focus-visible:outline focus-visible:outline-rurikon-400
-        focus-visible:rounded-xs 
-        focus-visible:outline-offset-1
-        focus-visible:outline-dotted'
+        className='link break-words'
         href={href}
         draggable={false}
         {...(href?.startsWith('https://') || href?.startsWith('http://')
@@ -64,16 +52,12 @@ export const components: Record<
       />
     )
   },
-  strong: (props) => <strong className='font-bold' {...props} />,
-  p: (props) => <p className='mt-7' {...props} />,
-  blockquote: (props) => (
-    <blockquote
-      className='pl-6 -ml-6 sm:pl-10 sm:-ml-10 md:pl-14 md:-ml-14 not-mobile:text-rurikon-400'
-      {...props}
-    />
-  ),
+  strong: (props) => <strong className='font-medium text-ink' {...props} />,
+  em: (props) => <em className='not-italic text-ink' {...props} />,
+  p: (props) => <p className='mt-4' {...props} />,
+  blockquote: (props) => <blockquote className='mt-4' {...props} />,
   pre: (props) => (
-    <pre className='mt-7 whitespace-pre md:whitespace-pre-wrap' {...props} />
+    <pre className='mt-4 whitespace-pre md:whitespace-pre-wrap' {...props} />
   ),
   code: async (props) => {
     if (typeof props.children === 'string') {
@@ -104,7 +88,7 @@ export const components: Record<
 
       return (
         <code
-          className='inline shiki-host text-[0.805rem] sm:text-[13.8px] md:text-[0.92rem]'
+          className='inline shiki-host'
           dangerouslySetInnerHTML={{ __html: code }}
         />
       )
@@ -121,7 +105,7 @@ export const components: Record<
     if (src.startsWith('https://')) {
       img = (
         <Image
-          className='mt-7'
+          className='mt-6'
           src={src}
           alt={alt}
           quality={95}
@@ -133,7 +117,7 @@ export const components: Record<
       const image = await import('./assets/images/' + src)
       img = (
         <Image
-          className='mt-7'
+          className='mt-6'
           src={image.default}
           alt={alt}
           quality={95}
@@ -149,7 +133,8 @@ export const components: Record<
 
     return img
   },
-  hr: (props) => <hr className='my-14 w-24 border-rurikon-border' {...props} />,
+  // Whitespace separates sections; the divider itself stays invisible.
+  hr: (props) => <hr className='my-4 border-0' {...props} />,
   BlockSideTitle,
   InlineMath,
   BlockMath,

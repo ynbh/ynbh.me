@@ -3,24 +3,19 @@
 import { useEffect, useState } from 'react'
 
 export default function ThemeToggle() {
-  const [isDark, setIsDark] = useState(true)
-  const [mounted, setMounted] = useState(false)
+  const [isDark, setIsDark] = useState<boolean | null>(null)
 
   useEffect(() => {
     setIsDark(document.documentElement.classList.contains('dark'))
-    setMounted(true)
   }, [])
 
   function toggle() {
-    const next = !isDark
+    const next = !document.documentElement.classList.contains('dark')
+    document.documentElement.classList.toggle('dark', next)
     setIsDark(next)
-    if (next) {
-      document.documentElement.classList.add('dark')
-      localStorage.setItem('theme', 'dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-      localStorage.setItem('theme', 'light')
-    }
+    try {
+      localStorage.setItem('theme', next ? 'dark' : 'light')
+    } catch {}
   }
 
   return (
@@ -28,10 +23,10 @@ export default function ThemeToggle() {
       type='button'
       onClick={toggle}
       aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-      className='text-rurikon-300 hover:text-rurikon-600 transition-colors leading-none'
+      className='press text-ink3 transition-colors duration-150 hover:text-ink2'
       suppressHydrationWarning
     >
-      {mounted ? (isDark ? 'light' : 'dark') : 'theme'}
+      {isDark === null ? 'Theme' : isDark ? 'Light' : 'Dark'}
     </button>
   )
 }

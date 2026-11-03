@@ -1,25 +1,15 @@
 'use client'
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
-import cn from 'clsx'
 
-import {
-  BEAT,
-  COUNTDOWN,
-  END,
-  FLASHES,
-  PADS,
-  TRACK,
-  actAt,
-  actEnd,
-  actStart,
-  type Act,
-} from './cues'
+import { BEAT, COUNTDOWN, END, FLASHES, PADS, TRACK, actAt } from './cues'
+import { Director } from './director'
+import { createPageSource, type PageSource } from './page-source'
+import { Stage } from './stage'
 import './rave.css'
 
 type Phase = 'idle' | 'armed' | 'loading' | 'playing' | 'ending'
 
-const HAZE_BANDS = 32
 const SOUVENIR_KEY = 'ynbh:rave-souvenir'
 const EASE_OUT = 'cubic-bezier(0.23, 1, 0.32, 1)'
 
@@ -73,6 +63,7 @@ function needleDrop(ctx: AudioContext, out: AudioNode, seconds = 0.6) {
   thunk.stop(t + 0.16)
 }
 
+
 /* ------------------------------------------------------------------ */
 
 function setFlag(name: string, on: boolean) {
@@ -85,45 +76,17 @@ function prefersReducedMotion() {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches
 }
 
-function withViewTransition(update: () => void, wipe: 'down' | 'up', x: number, y: number) {
-  const root = document.documentElement
-  const start: ((cb: () => void) => { finished: Promise<void> }) | undefined = (
-    document as any
-  ).startViewTransition?.bind(document)
-  if (!start || prefersReducedMotion()) {
-    update()
-    return
-  }
-  const r = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y))
-  root.style.setProperty('--wipe-x', `${x}px`)
-  root.style.setProperty('--wipe-y', `${y}px`)
-  root.style.setProperty('--wipe-r', `${r}px`)
-  root.setAttribute('data-rave-wipe', wipe)
-  const vt = start(update)
-  vt.finished.finally(() => root.removeAttribute('data-rave-wipe'))
-}
-
-/** Put every page element back the way the set found it. */
-function resetPage() {
-  const root = document.documentElement
-  ;['data-rave-act', 'data-rave-labels', 'data-rave-meters', 'data-rave-crowd'].forEach((a) =>
-    root.removeAttribute(a)
-  )
-  root.style.removeProperty('--build')
-  document.querySelectorAll<HTMLElement>('[data-rave-name]').forEach((el) => {
-    el.style.letterSpacing = ''
-  })
-  document.querySelectorAll<HTMLElement>('[data-rave-logo]').forEach((el) => {
-    el.style.rotate = ''
-  })
-  document.querySelectorAll<HTMLElement>('[data-rave-label], [data-rave-meter]').forEach((el) => {
-    el.style.removeProperty('--rave-c')
-  })
-}
-
 function formatTime(t: number) {
   const s = Math.max(0, Math.floor(t))
   return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`
+}
+
+type Show = {
+  stage: Stage
+  source: PageSource
+  director: Director
+  onResize: () => void
+  onPointer: (e: PointerEvent) => void
 }
 
 export default function Rave() {
@@ -139,21 +102,16 @@ export default function Rave() {
   const entering = useRef(false)
   const boardRef = useRef<HTMLDivElement>(null)
   const timeRef = useRef<HTMLSpanElement>(null)
-  const hazeRef = useRef<HTMLDivElement>(null)
-  const backRef = useRef<HTMLDivElement>(null)
-  const spotRef = useRef<HTMLDivElement>(null)
-  const neonRef = useRef<HTMLDivElement>(null)
-  const crowdRef = useRef<HTMLDivElement>(null)
-  const countRef = useRef<HTMLDivElement>(null)
-  const flashRef = useRef<HTMLDivElement>(null)
 
   const audio = useRef<HTMLAudioElement | null>(null)
   const ctx = useRef<AudioContext | null>(null)
   const master = useRef<GainNode | null>(null)
   const analyser = useRef<AnalyserNode | null>(null)
   const raf = useRef(0)
-  const lastFlash = useRef(0)
+  const lastHit = useRef(0)
   const anchor = useRef({ x: 0, y: 0 })
+  const show = useRef<Show | null>(null)
+  const pointer = useRef<{ x: number; y: number } | null>(null)
 
   const go = useCallback((p: Phase) => {
     phaseRef.current = p
@@ -218,9 +176,11 @@ export default function Rave() {
       go('armed')
       document.documentElement.setAttribute('data-rave', 'armed')
       // The pads boot one by one, like a controller powering on.
-      ;[1, 2, 3, 4].forEach((n) => setTimeout(() => {
-        if (phaseRef.current === 'armed') setBooted(n)
-      }, 180 + n * 60))
+      ;[1, 2, 3, 4].forEach((n) =>
+        setTimeout(() => {
+          if (phaseRef.current === 'armed') setBooted(n)
+        }, 180 + n * 60)
+      )
     },
     [go]
   )
@@ -261,16 +221,49 @@ export default function Rave() {
       .finished.then(finish, finish)
   }, [go])
 
-  /* ---------------- The show ---------------- */
+  /* ---------------- The stage ---------------- */
+
+  const openStage = useCallback((): Show | null => {
+    const content = document.querySelector<HTMLElement>('[data-rave-content]')
+    if (!content) return null
+    const paper = getComputedStyle(document.documentElement).getPropertyValue('--color-bg').trim() || '#fff'
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.5)
+    const stage = Stage.create(paper, dpr)
+    if (!stage) return null
+    const source = createPageSource(content, dpr)
+    const director = new Director(prefersReducedMotion())
+    const onResize = () => {
+      stage.resize()
+      source.resize()
+    }
+    const onPointer = (e: PointerEvent) => {
+      if (e.pointerType === 'mouse' || e.pointerType === 'pen') pointer.current = { x: e.clientX, y: e.clientY }
+    }
+    window.addEventListener('resize', onResize)
+    window.addEventListener('pointermove', onPointer, { passive: true })
+    document.documentElement.setAttribute('data-rave-stage', source.live ? 'live' : 'raster')
+    return { stage, source, director, onResize, onPointer }
+  }, [])
+
+  const closeStage = useCallback(() => {
+    const s = show.current
+    show.current = null
+    if (!s) return
+    window.removeEventListener('resize', s.onResize)
+    window.removeEventListener('pointermove', s.onPointer)
+    s.stage.destroy()
+    s.source.destroy()
+    document.documentElement.removeAttribute('data-rave-stage')
+  }, [])
 
   const teardown = useCallback(() => {
     cancelAnimationFrame(raf.current)
-    resetPage()
+    closeStage()
     document.documentElement.removeAttribute('data-rave')
     setPill(false)
     setLit([])
     go('idle')
-  }, [go])
+  }, [closeStage, go])
 
   const lightsUp = useCallback(
     (fast: boolean) => {
@@ -285,249 +278,132 @@ export default function Rave() {
         g.gain.linearRampToValueAtTime(0, c.currentTime + 0.4)
         setTimeout(() => a?.pause(), 420)
       }
-      // Rows settle back in reverse order.
-      if (!prefersReducedMotion()) {
-        const rows = Array.from(document.querySelectorAll<HTMLElement>('[data-rave-row]')).reverse()
-        rows.forEach((row, i) =>
-          row.animate(
-            [{ transform: 'translateY(4px)', opacity: 0.6 }, { transform: 'none', opacity: 1 }],
-            { duration: 320, delay: 300 + i * 40, easing: EASE_OUT, fill: 'backwards' }
-          )
-        )
-      }
-      const { x, y } = anchor.current
+      show.current?.director.lightsUp(performance.now())
       setPill(false)
-      withViewTransition(() => {
-        resetPage()
-        document.documentElement.setAttribute('data-rave', 'ending')
-      }, 'up', x, y)
-
       setScreen('Thanks')
       setLit([])
-      const board = boardRef.current
-      const home = () => {
-        if (!fast && audio.current && !audio.current.paused) {
-          // Let the tail of the track fade out on its own, then put the board away.
-          audio.current.addEventListener('ended', () => teardown(), { once: true })
-        } else teardown()
-      }
-      setTimeout(() => {
-        if (!board) return home()
-        board
-          .animate(
-            [
-              { opacity: 1, transform: 'scale(1)' },
-              { opacity: 0, transform: 'scale(0.12)' },
-            ],
-            { duration: 320, easing: EASE_OUT, fill: 'both' }
-          )
-          .finished.then(home, home)
-      }, fast ? 450 : 1400)
     },
-    [go, teardown]
+    [go]
   )
+
+  /** Called by the frame loop once the house lights are fully up. */
+  const putAway = useCallback(() => {
+    cancelAnimationFrame(raf.current)
+    closeStage()
+    document.documentElement.setAttribute('data-rave', 'ending')
+    const board = boardRef.current
+    const home = () => {
+      const a = audio.current
+      // Let the tail of the track ring out on its own, then put the board away.
+      if (a && !a.paused && !a.ended) a.addEventListener('ended', () => teardown(), { once: true })
+      else teardown()
+    }
+    setTimeout(() => {
+      if (!board) return home()
+      board
+        .animate(
+          [
+            { opacity: 1, transform: 'scale(1)' },
+            { opacity: 0, transform: 'scale(0.12)' },
+          ],
+          { duration: 320, easing: EASE_OUT, fill: 'both' }
+        )
+        .finished.then(home, home)
+    }, 400)
+  }, [closeStage, teardown])
 
   const run = useCallback(() => {
     const a = audio.current!
-    const reduced = prefersReducedMotion()
-    const root = document.documentElement
-    const content = document.querySelector<HTMLElement>('[data-rave-content]')
-    const name = document.querySelector<HTMLElement>('[data-rave-name]')
-    const rows = Array.from(document.querySelectorAll<HTMLElement>('[data-rave-row]'))
-    const logos = Array.from(document.querySelectorAll<HTMLElement>('[data-rave-logo]'))
-    const labels = Array.from(document.querySelectorAll<HTMLElement>('[data-rave-label]'))
-    const meters = Array.from(document.querySelectorAll<HTMLElement>('[data-rave-meter]'))
-    const meterBars = meters.map((m) => Array.from(m.querySelectorAll<HTMLElement>('.rave-meter i')))
-    const haze = Array.from(hazeRef.current?.children ?? []) as HTMLElement[]
-    const crowd = crowdRef.current
-    const neon = neonRef.current
-    const spot = spotRef.current
-    const back = backRef.current
-    const count = countRef.current
-
-    labels.forEach((el, i) => el.style.setProperty('--rave-c', PADS[i % 4]))
-    meters.forEach((el, i) => el.style.setProperty('--rave-c', PADS[(i + 2) % 4]))
-
+    const s = show.current
     const an = analyser.current!
     const bins = new Uint8Array(an.frequencyBinCount)
     const hz = (ctx.current?.sampleRate ?? 44100) / an.fftSize
-    const bandEdges = Array.from({ length: HAZE_BANDS + 1 }, (_, i) =>
-      Math.max(1, Math.round((40 * Math.pow(12000 / 40, i / HAZE_BANDS)) / hz))
-    )
-
-    let act: Act | null = null
-    let beat = -1
-    let flashIdx = 0
-    let countIdx = 0
-    let joined = 0
-    let lastSpacing = ''
+    const bassHi = Math.max(2, Math.round(150 / hz))
+    const highLo = Math.round(6000 / hz)
+    const highHi = Math.min(bins.length, Math.round(14000 / hz))
     const latency = (ctx.current?.outputLatency || 0) + (ctx.current?.baseLatency || 0)
+    const name = document.querySelector<HTMLElement>('[data-rave-name]')
 
-    const thump = (scale: number) => {
-      if (reduced || !content) return
-      content.animate([{ transform: `scale(${scale})` }, { transform: 'scale(1)' }], {
-        duration: 140,
-        easing: EASE_OUT,
-      })
-    }
+    let beat = -1
+    let lastAct = ''
+    let countIdx = 0
+    let bass = 0
+    let high = 0
 
-    const onBeat = (n: number, a: Act) => {
-      const inBar = n % 4
-      if (a === 'kick' || a === 'fill') thump(1.004)
-      if (a === 'fill' && inBar === 0) {
-        // One element joins the set per bar, never two at once.
-        joined++
-        if (joined === 1) setFlag('data-rave-labels', true)
-        if (joined === 3) setFlag('data-rave-meters', true)
-        if (joined === 4) setFlag('data-rave-crowd', true)
-      }
-      if (joined >= 2 && !reduced && a !== 'silence') {
-        logos.forEach((el, i) => {
-          el.style.rotate = `${(n + i) % 2 ? 9 : -9}deg`
-        })
-      }
-      if (a === 'build') {
-        setLit(inBar === 0 ? [Math.floor(n / 4) % 4] : [])
-      }
-      if (a === 'drop') {
-        setLit([n % 4])
-        if (!reduced) {
-          rows.forEach((row, i) =>
-            row.animate(
-              [{ transform: 'none' }, { transform: 'translateY(-3px)' }, { transform: 'none' }],
-              { duration: 280, delay: i * 30, easing: EASE_OUT }
-            )
-          )
-          crowd?.firstElementChild?.animate(
-            [{ transform: 'none' }, { transform: 'translateY(-10px)' }, { transform: 'translateY(1px)' }, { transform: 'none' }],
-            { duration: 420, easing: 'cubic-bezier(0.34, 1.4, 0.64, 1)' }
-          )
-          neon?.animate([{ scale: '1.025' }, { scale: '1' }], { duration: 300, easing: EASE_OUT })
-        }
-      }
-    }
-
-    const enterAct = (next: Act) => {
-      act = next
-      root.setAttribute('data-rave-act', next)
-      if (next === 'kick') setScreen(`${TRACK.title} — ${TRACK.artist}`)
-      if (next === 'build') {
-        // Catch-up if someone scrubbed past the fill.
-        setFlag('data-rave-labels', true)
-        setFlag('data-rave-meters', true)
-        setFlag('data-rave-crowd', true)
-        joined = Math.max(joined, 4)
-      }
-      if (next === 'silence') {
-        setScreen('· · ·')
-        setLit([])
-      }
-      if (next === 'drop') {
-        setScreen('129 BPM')
-        if (count) count.style.opacity = '0'
-        if (name) name.style.letterSpacing = ''
-        lastSpacing = ''
-        try {
-          localStorage.setItem(SOUVENIR_KEY, '1')
-        } catch {}
-        setFlag('data-rave-souvenir', true)
-      }
-      if (next === 'outro') lightsUp(false)
+    const level = (lo: number, hi: number) => {
+      let sum = 0
+      for (let i = lo; i < hi; i++) sum += bins[i]
+      return sum / Math.max(1, hi - lo) / 255
     }
 
     const frame = () => {
       raf.current = requestAnimationFrame(frame)
-      if (phaseRef.current !== 'playing') return
-      const t = Math.max(0, a.currentTime - latency)
+      const now = performance.now()
+      const t = phaseRef.current === 'loading' ? 0 : Math.max(0, a.currentTime - latency)
+      const act = actAt(t)
 
-      const nextAct = actAt(t)
-      if (nextAct !== act) enterAct(nextAct)
-      if (phaseRef.current !== 'playing') return
-
-      const n = Math.floor(t / BEAT + 0.02)
-      if (n !== beat) {
-        beat = n
-        onBeat(n, act!)
+      if (phaseRef.current === 'playing') {
+        if (act !== lastAct) {
+          lastAct = act
+          if (act === 'kick') setScreen(`${TRACK.title} — ${TRACK.artist}`)
+          if (act === 'silence') {
+            setScreen('· · ·')
+            setLit([])
+          }
+          if (act === 'drop') {
+            setScreen('129 BPM')
+            try {
+              localStorage.setItem(SOUVENIR_KEY, '1')
+            } catch {}
+            setFlag('data-rave-souvenir', true)
+          }
+          if (act === 'outro') lightsUp(false)
+        }
+        const n = Math.floor(t / BEAT + 0.02)
+        if (n !== beat) {
+          beat = n
+          if (act === 'build') setLit(n % 4 === 0 ? [Math.floor(n / 4) % 4] : [])
+          if (act === 'drop') setLit([n % 4])
+        }
+        if (act === 'silence') {
+          if (FLASHES.some((f) => t >= f && t < f + 0.15)) setLit([0, 1, 2, 3])
+          else if (countIdx === 0) setLit([])
+          while (countIdx < COUNTDOWN.length && t >= COUNTDOWN[countIdx][0]) {
+            setScreen(COUNTDOWN[countIdx][1])
+            countIdx++
+            setLit([3 - countIdx])
+          }
+        }
+        if (timeRef.current) timeRef.current.textContent = formatTime(t)
+        if (t >= END || a.ended) lightsUp(false)
       }
 
-      if (timeRef.current) timeRef.current.textContent = formatTime(t)
-
-      // Spectrum → haze and meters.
+      if (!s) return
       an.getByteFrequencyData(bins)
-      const level = (lo: number, hi: number) => {
-        let s = 0
-        for (let i = lo; i < hi; i++) s += bins[i]
-        return s / Math.max(1, hi - lo) / 255
-      }
-      if (act === 'build' || act === 'drop' || act === 'outro') {
-        for (let i = 0; i < haze.length; i++) {
-          const v = level(bandEdges[i], Math.max(bandEdges[i] + 1, bandEdges[i + 1]))
-          haze[i].style.transform = `scaleY(${(0.06 + v * v * 1.1).toFixed(3)})`
-        }
-      }
-      if (joined >= 3 && act !== 'silence') {
-        meterBars.forEach((bars, m) =>
-          bars.forEach((bar, j) => {
-            const b = 2 + ((m * 5 + j * 7) % 24)
-            const v = level(bandEdges[b], bandEdges[b + 1] + 1)
-            bar.style.transform = `scaleY(${Math.max(0.12, Math.min(1, v * 1.25)).toFixed(3)})`
-          })
-        )
-      }
+      bass += (level(1, bassHi) - bass) * 0.35
+      high += (level(highLo, highHi) - high) * 0.35
 
-      // The build: tension rises, the name stretches with the riser.
-      if (act === 'build') {
-        const p = (t - actStart('build')) / (actEnd('build') - actStart('build'))
-        back?.style.setProperty('--build', p.toFixed(3))
-        root.style.setProperty('--build', p.toFixed(3))
-        const spacing = `${(p * 0.12).toFixed(3)}em`
-        if (name && spacing !== lastSpacing && !reduced) {
-          name.style.letterSpacing = spacing
-          lastSpacing = spacing
-        }
-      }
-
-      // The spotlight drifts, lagging a little behind the name.
-      if (spot && name && (act === 'kick' || act === 'fill' || act === 'build')) {
-        const r = name.getBoundingClientRect()
-        const drift = reduced ? 0 : Math.sin(t * 0.7) * 24
-        spot.style.transform = `translate(${r.left + r.width / 2 + drift}px, ${r.top + r.height / 2}px)`
-      }
-
-      // Silence: two flashes in the dark, then 3 · 2 · 1.
-      if (act === 'silence') {
-        while (flashIdx < FLASHES.length && t >= FLASHES[flashIdx]) {
-          flashIdx++
-          if (!reduced && content) {
-            content.animate([{ opacity: 0.22 }, { opacity: 0 }], { duration: 260, easing: 'ease-out' })
-            setLit([0, 1, 2, 3])
-            setTimeout(() => setLit([]), 160)
-          }
-        }
-        while (countIdx < COUNTDOWN.length && t >= COUNTDOWN[countIdx][0]) {
-          const label = COUNTDOWN[countIdx][1]
-          countIdx++
-          setScreen(label)
-          setLit([3 - countIdx])
-          if (count) {
-            count.textContent = COUNTDOWN.slice(0, countIdx).map(([, l]) => l).join(' · ')
-            count.style.opacity = '1'
-            if (!reduced)
-              count.animate([{ scale: '1.25', opacity: 0 }, { scale: '1', opacity: 1 }], {
-                duration: 220,
-                easing: EASE_OUT,
-              })
-          }
-        }
-      }
-
-      if (t >= END || a.ended) {
-        if (phaseRef.current === 'playing') lightsUp(false)
-      }
+      if (s.source.update()) s.stage.upload(s.source.canvas)
+      const r = name?.getBoundingClientRect()
+      s.stage.render(
+        s.director.look({
+          t,
+          now,
+          bass,
+          high,
+          w: innerWidth,
+          h: innerHeight,
+          pointer: pointer.current,
+          rest: r ? { x: r.left + r.width / 2, y: r.top + r.height / 2 } : { x: innerWidth / 2, y: 120 },
+          anchor: anchor.current,
+        }),
+        now / 1000
+      )
+      if (s.director.done(now)) putAway()
     }
 
     frame()
-  }, [lightsUp])
+  }, [lightsUp, putAway])
 
   const start = useCallback(
     (pad: number) => {
@@ -544,7 +420,7 @@ export default function Rave() {
         const g = c.createGain()
         const an = c.createAnalyser()
         an.fftSize = 1024
-        an.smoothingTimeConstant = 0.78
+        an.smoothingTimeConstant = 0.6
         src.connect(g)
         g.connect(an)
         an.connect(c.destination)
@@ -561,10 +437,12 @@ export default function Rave() {
       // Unlock the element inside the gesture (iOS), then rewind for the real start.
       a.currentTime = 0
       const unlock = a.play()
-      unlock?.then(() => {
-        a.pause()
-        a.currentTime = 0
-      }).catch(() => {})
+      unlock
+        ?.then(() => {
+          a.pause()
+          a.currentTime = 0
+        })
+        .catch(() => {})
 
       setLit([pad])
       setScreen('Loading')
@@ -574,20 +452,23 @@ export default function Rave() {
         if (phaseRef.current !== 'loading') return
         needleDrop(c, c.destination)
         setScreen('Needle drop')
-        const { x, y } = anchor.current
-        withViewTransition(() => {
+        // The stage takes over the page; the lights go down from the board.
+        show.current = openStage()
+        show.current?.director.lightsDown(performance.now())
+        run()
+        setTimeout(() => {
+          if (phaseRef.current !== 'loading') return
           document.documentElement.setAttribute('data-rave', 'playing')
           go('playing')
-        }, 'down', x, y)
-        setTimeout(() => {
-          if (phaseRef.current !== 'playing') return
           a.currentTime = 0
-          a.play().then(() => {
-            run()
-            setTimeout(() => {
-              if (phaseRef.current === 'playing') setPill(true)
-            }, BEAT * 4 * 1000)
-          }, () => teardown())
+          a.play().then(
+            () => {
+              setTimeout(() => {
+                if (phaseRef.current === 'playing') setPill(true)
+              }, BEAT * 4 * 1000)
+            },
+            () => teardown()
+          )
         }, 560)
       }
 
@@ -605,29 +486,25 @@ export default function Rave() {
         a.load()
       }
     },
-    [go, run, teardown]
+    [go, openStage, run, teardown]
   )
 
-  /** Pads during the set: colour hits, capped at 3 per second. */
-  const fx = useCallback((pad: number) => {
+  /** Pads during the set, capped at 4 hits a second. */
+  const hit = useCallback((pad: number) => {
     const now = performance.now()
-    if (now - lastFlash.current < 333 || prefersReducedMotion()) return
-    lastFlash.current = now
-    const el = flashRef.current
-    if (!el) return
-    el.style.setProperty('--flash', PADS[pad])
-    el.style.setProperty('--fx', `${anchor.current.x}px`)
-    el.style.setProperty('--fy', `${anchor.current.y}px`)
-    el.animate([{ opacity: 0.45 }, { opacity: 0 }], { duration: 420, easing: EASE_OUT })
+    if (now - lastHit.current < 250) return
+    lastHit.current = now
+    show.current?.director.pad(pad, now)
+    setLit([pad])
     if (ctx.current) padClick(ctx.current, ctx.current.destination)
   }, [])
 
   const press = useCallback(
     (pad: number) => {
       if (phaseRef.current === 'armed') start(pad)
-      else if (phaseRef.current === 'playing') fx(pad)
+      else if (phaseRef.current === 'playing') hit(pad)
     },
-    [fx, start]
+    [hit, start]
   )
 
   /* ---------------- Input ---------------- */
@@ -728,11 +605,15 @@ export default function Rave() {
     return () => document.removeEventListener('visibilitychange', onVis)
   }, [])
 
-  useEffect(() => () => {
-    cancelAnimationFrame(raf.current)
-    audio.current?.pause()
-    ctx.current?.close()
-  }, [])
+  useEffect(
+    () => () => {
+      cancelAnimationFrame(raf.current)
+      closeStage()
+      audio.current?.pause()
+      ctx.current?.close()
+    },
+    [closeStage]
+  )
 
   if (!mounted) return null
 
@@ -742,79 +623,6 @@ export default function Rave() {
 
   return (
     <>
-      <div ref={backRef} className='rave-back' aria-hidden>
-        <div ref={spotRef} className='rave-spot' />
-        <div ref={neonRef} className='rave-neon'>YASHAS</div>
-        <div ref={hazeRef} className='rave-haze'>
-          {Array.from({ length: HAZE_BANDS }, (_, i) => (
-            <i key={i} />
-          ))}
-        </div>
-      </div>
-
-      <div className='rave-front' aria-hidden>
-        <div className='rave-beams'>
-          <i />
-          <i />
-          <i />
-          <i />
-        </div>
-        <svg className='rave-lasers' viewBox='0 0 100 100' preserveAspectRatio='none'>
-          <g>
-            {[
-              [PADS[2], 8],
-              [PADS[0], 32],
-            ].map(([c, x]) => (
-              <g key={x as number}>
-                <line x1='50' y1='0' x2={x as number} y2='100' stroke={c as string} strokeOpacity='.25' strokeWidth='1.2' vectorEffect='non-scaling-stroke' style={{ strokeWidth: 6 }} />
-                <line x1='50' y1='0' x2={x as number} y2='100' stroke={c as string} strokeWidth='1.2' vectorEffect='non-scaling-stroke' />
-              </g>
-            ))}
-          </g>
-          <g>
-            {[
-              [PADS[1], 92],
-              [PADS[3], 68],
-            ].map(([c, x]) => (
-              <g key={x as number}>
-                <line x1='50' y1='0' x2={x as number} y2='100' stroke={c as string} strokeOpacity='.25' vectorEffect='non-scaling-stroke' style={{ strokeWidth: 6 }} />
-                <line x1='50' y1='0' x2={x as number} y2='100' stroke={c as string} strokeWidth='1.2' vectorEffect='non-scaling-stroke' />
-              </g>
-            ))}
-          </g>
-        </svg>
-        <div ref={crowdRef} className='rave-crowd'>
-          <svg viewBox='0 0 1200 92' preserveAspectRatio='xMidYMax slice'>
-            <defs>
-              <pattern id='rave-down' width='72' height='92' patternUnits='userSpaceOnUse'>
-                <circle cx='12' cy='50' r='9' fill='currentColor' />
-                <path d='M-2 92 C-2 64 26 64 26 92Z' fill='currentColor' />
-                <circle cx='38' cy='44' r='10' fill='currentColor' />
-                <path d='M22 92 C22 58 54 58 54 92Z' fill='currentColor' />
-                <circle cx='62' cy='54' r='8.5' fill='currentColor' />
-                <path d='M49 92 C49 68 75 68 75 92Z' fill='currentColor' />
-              </pattern>
-              <pattern id='rave-up' width='72' height='92' patternUnits='userSpaceOnUse'>
-                <circle cx='12' cy='46' r='9' fill='currentColor' />
-                <path d='M-2 92 C-2 60 26 60 26 92Z' fill='currentColor' />
-                <path d='M3 66 L-3 22 M21 66 L28 20' stroke='currentColor' strokeWidth='5' strokeLinecap='round' />
-                <circle cx='38' cy='40' r='10' fill='currentColor' />
-                <path d='M22 92 C22 54 54 54 54 92Z' fill='currentColor' />
-                <circle cx='62' cy='50' r='8.5' fill='currentColor' />
-                <path d='M49 92 C49 64 75 64 75 92Z' fill='currentColor' />
-                <path d='M55 70 L50 30 M69 70 L76 28' stroke='currentColor' strokeWidth='5' strokeLinecap='round' />
-              </pattern>
-            </defs>
-            <g>
-              <rect className='down' width='1200' height='92' fill='url(#rave-down)' />
-              <rect className='up' width='1200' height='92' fill='url(#rave-up)' />
-            </g>
-          </svg>
-        </div>
-        <div ref={countRef} className='rave-count' />
-        <div ref={flashRef} className='rave-flash' />
-      </div>
-
       {showBoard && (
         <div
           ref={boardRef}
@@ -826,7 +634,11 @@ export default function Rave() {
         >
           <div className='rave-screen' data-on={playing || phase === 'loading' ? '' : undefined}>
             <span className='truncate'>{screen}</span>
-            {playing && <span ref={timeRef} className='time'>0:00</span>}
+            {playing && (
+              <span ref={timeRef} className='time'>
+                0:00
+              </span>
+            )}
           </div>
           <div className='rave-pads'>
             {PADS.map((_, i) => (
@@ -850,14 +662,14 @@ export default function Rave() {
               />
             ))}
           </div>
-          <div className={cn('rave-caption')}>
+          <div className='rave-caption'>
             {phase === 'armed'
               ? 'press play'
               : phase === 'loading'
                 ? 'cueing…'
                 : coarse
                   ? 'tap stop to end'
-                  : 'esc to stop'}
+                  : 'esc to stop · 1–4 for fx'}
           </div>
         </div>
       )}

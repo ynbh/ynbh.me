@@ -30,7 +30,6 @@ export function Row({
           alt=''
           width={20}
           height={20}
-          data-rave-logo
           className={cn(
             'size-5 shrink-0 rounded-[5px] bg-white object-contain p-[2px] ring-1 ring-hair',
             desc ? 'mt-px' : 'self-center'
@@ -48,17 +47,8 @@ export function Row({
         )}
       </span>
       {meta && (
-        <span
-          data-rave-meter
-          className={cn('meta relative hidden shrink-0 text-ink3 sm:block', desc && 'mt-0.5')}
-        >
-          <span className='rave-meter-label'>{meta}</span>
-          <span aria-hidden className='rave-meter'>
-            <i />
-            <i />
-            <i />
-            <i />
-          </span>
+        <span className={cn('meta hidden shrink-0 text-ink3 sm:block', desc && 'mt-0.5')}>
+          {meta}
         </span>
       )}
     </>
@@ -71,7 +61,7 @@ export function Row({
 
   if (!href) {
     return (
-      <div className={className} data-rave-row>
+      <div className={className}>
         {content}
       </div>
     )
@@ -82,7 +72,6 @@ export function Row({
       href={href}
       draggable={false}
       className={className}
-      data-rave-row
       {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
     >
       {content}
@@ -99,7 +88,7 @@ export function Section({
 }) {
   return (
     <section className='mt-14'>
-      <h2 data-rave-label className='mb-3 text-[13px] font-normal text-ink3'>
+      <h2 className='mb-3 text-[13px] font-normal text-ink3'>
         {label}
       </h2>
       {children}
